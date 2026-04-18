@@ -7,7 +7,7 @@ const Analysis = require('../models/Analysis');
 // @access  Public
 exports.analyzeSkillGap = async (req, res) => {
   try {
-    const { jobDescription } = req.body;
+    const { jobDescription, userId } = req.body;
 
     // 1. Validate Input
     if (!req.file || !jobDescription) {
@@ -78,7 +78,11 @@ ${jobDescription}
     const analysisData = JSON.parse(aiResponseText);
 
     // Save record to MongoDB Database
+    let userIdObj = null;
+    if (userId && userId !== 'undefined' && userId !== 'null') userIdObj = userId;
+
     const savedAnalysis = await Analysis.create({
+      user: userIdObj, // Store user ID if provided by the frontend payload
       jobDescription: jobDescription,
       matchPercentage: analysisData.matchPercentage,
       matchedSkills: analysisData.matchedSkills,
@@ -87,7 +91,7 @@ ${jobDescription}
       roadmap: analysisData.roadmap,
     });
 
-    // 6. Return the finalized data
+    // Return the finalized data
     return res.status(200).json({
       success: true,
       data: analysisData,
@@ -100,5 +104,17 @@ ${jobDescription}
       success: false, 
       message: 'Failed to analyze the resume and JD.'
     });
+  }
+};
+
+// @desc    Get logged in user's analysis history
+// @route   GET /api/analysis/history
+// @access  Private
+exports.getUserHistory = async (req, res) => {
+  try {
+    const history = await Analysis.find({ user: req.user._id }).sort({ createdAt: -1 });
+    res.status(200).json({ success: true, data: history });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch history' });
   }
 };

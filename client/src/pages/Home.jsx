@@ -27,6 +27,13 @@ const Home = () => {
       formData.append('resume', file);
       formData.append('jobDescription', jobDescription);
 
+      // Attach user ID if logged in
+      const userInfoStr = localStorage.getItem('userInfo');
+      if (userInfoStr) {
+        const userInfo = JSON.parse(userInfoStr);
+        formData.append('userId', userInfo._id);
+      }
+
       const response = await axios.post('http://localhost:5000/api/analysis/analyze-gap', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
