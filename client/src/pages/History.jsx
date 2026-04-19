@@ -52,15 +52,28 @@ const History = () => {
             <div key={record._id} className="glass-panel" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                 <h3 style={{ color: 'var(--text-main)' }}>Analysis from {new Date(record.createdAt).toLocaleDateString()}</h3>
-                <span style={{ 
-                  background: record.matchPercentage > 70 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
-                  color: record.matchPercentage > 70 ? '#10B981' : '#F59E0B', 
-                  padding: '6px 16px', 
-                  borderRadius: '20px', 
-                  fontWeight: 'bold' 
-                }}>
-                  {record.matchPercentage}% Match
-                </span>
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <span style={{ 
+                    background: record.matchPercentage > 70 ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)', 
+                    color: record.matchPercentage > 70 ? '#10B981' : '#F59E0B', 
+                    padding: '6px 16px', 
+                    borderRadius: '20px', 
+                    fontWeight: 'bold' 
+                  }}>
+                    {record.matchPercentage}% Match
+                  </span>
+                  {(record.atsScore || record.atsScore === 0) && (
+                    <span style={{ 
+                      background: record.atsScore > 75 ? 'rgba(59, 130, 246, 0.1)' : 'rgba(239, 68, 68, 0.1)', 
+                      color: record.atsScore > 75 ? '#3B82F6' : '#EF4444', 
+                      padding: '6px 16px', 
+                      borderRadius: '20px', 
+                      fontWeight: 'bold' 
+                    }}>
+                      {record.atsScore}% ATS Score
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div style={{ marginBottom: '1rem' }}>

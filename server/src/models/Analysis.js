@@ -17,6 +17,8 @@ const analysisSchema = new mongoose.Schema({
   matchedSkills: [{ type: String }],
   missingSkills: [{ type: String }],
   recommendations: [{ type: String }],
+  atsScore: { type: Number, default: 0 },
+  resumeImprovements: [{ type: String }],
   roadmap: [
     {
       step: Number,

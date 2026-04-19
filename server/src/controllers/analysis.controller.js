@@ -36,9 +36,15 @@ Analyze them and return a strict JSON object with this exact structure (do not i
 
 {
   "matchPercentage": 75,
+  "atsScore": 62,
   "matchedSkills": ["JavaScript", "React"],
   "missingSkills": ["Node.js", "Docker"],
   "recommendations": ["Learn backend patterns", "Practice containerization"],
+  "resumeImprovements": [
+    "Use stronger action verbs (e.g. 'Implemented' instead of 'Did')",
+    "Add measurable metrics to your work experience",
+    "Format your projects section more concisely"
+  ],
   "roadmap": [
     { "step": 1, "task": "Learn Node.js Basics", "duration": "1 week" },
     { "step": 2, "task": "Build basic CRUD app", "duration": "2 weeks" }
@@ -85,9 +91,11 @@ ${jobDescription}
       user: userIdObj, // Store user ID if provided by the frontend payload
       jobDescription: jobDescription,
       matchPercentage: analysisData.matchPercentage,
+      atsScore: analysisData.atsScore || 0,
       matchedSkills: analysisData.matchedSkills,
       missingSkills: analysisData.missingSkills,
       recommendations: analysisData.recommendations,
+      resumeImprovements: analysisData.resumeImprovements || [],
       roadmap: analysisData.roadmap,
     });
 

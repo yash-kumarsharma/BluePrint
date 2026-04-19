@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import html2pdf from 'html2pdf.js';
 
 const Home = () => {
   const [file, setFile] = useState(null);
@@ -44,6 +45,19 @@ const Home = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDownloadPdf = () => {
+    const element = document.getElementById('roadmap-content');
+    const opt = {
+      margin:       0.5,
+      filename:     'Blueprint_Career_Roadmap.pdf',
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#0B0E14' },
+      jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+    };
+    
+    html2pdf().from(element).set(opt).save();
   };
 
   return (
@@ -91,12 +105,22 @@ const Home = () => {
 
         {/* Results - Right Side */}
         {result && (
-          <div className="glass-panel animate-fade-in" style={{ padding: '2rem', borderTop: '4px solid var(--accent-secondary)' }}>
-            <h2 style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between' }}>
-              Analysis Results
-              <span style={{ color: result.matchPercentage > 70 ? '#10B981' : '#F59E0B' }}>
-                {result.matchPercentage}% Match
-              </span>
+          <div className="glass-panel animate-fade-in" style={{ padding: '2rem', borderTop: '4px solid var(--accent-secondary)', position: 'relative' }}>
+            <button onClick={handleDownloadPdf} style={{ position: 'absolute', top: '-1rem', right: '-1rem', background: 'var(--accent-secondary)', color: 'white', border: 'none', padding: '8px 16px', borderRadius: '20px', cursor: 'pointer', fontWeight: 'bold', boxShadow: '0 4px 10px rgba(139, 92, 246, 0.4)', transition: '0.2s' }}>
+              📥 Download PDF
+            </button>
+
+            <div id="roadmap-content" style={{ padding: '1rem', color: 'var(--text-main)' }}>
+              <h2 style={{ marginBottom: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                Analysis Results
+              <div style={{ display: 'flex', gap: '1rem', fontSize: '1.1rem' }}>
+                <span style={{ color: result.matchPercentage > 70 ? '#10B981' : '#F59E0B', background: 'rgba(255,255,255,0.05)', padding: '4px 12px', borderRadius: '8px' }}>
+                  {result.matchPercentage}% Job Match
+                </span>
+                <span style={{ color: result.atsScore > 75 ? '#3B82F6' : '#EF4444', background: 'rgba(255,255,255,0.05)', padding: '4px 12px', borderRadius: '8px' }}>
+                  {result.atsScore}% ATS Score
+                </span>
+              </div>
             </h2>
 
             <div style={{ marginBottom: '2rem' }}>
@@ -121,6 +145,17 @@ const Home = () => {
               </div>
             </div>
 
+            {result.resumeImprovements && result.resumeImprovements.length > 0 && (
+              <div style={{ marginBottom: '2rem' }}>
+                <h3 style={{ color: '#3B82F6', marginBottom: '0.5rem' }}>📄 Resume Improvements</h3>
+                <ul style={{ paddingLeft: '1.2rem', color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                  {result.resumeImprovements.map((improvement, index) => (
+                    <li key={index}>{improvement}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
             <div>
               <h3 style={{ color: 'var(--accent-primary)', marginBottom: '1rem' }}>🗺️ Your Learning Roadmap</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -130,6 +165,7 @@ const Home = () => {
                     <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem' }}>⏱️ Duration: {step.duration}</p>
                   </div>
                 ))}
+              </div>
               </div>
             </div>
           </div>
