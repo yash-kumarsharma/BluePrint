@@ -29,9 +29,10 @@ const Navbar = () => {
       </Link>
       
       <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
+        <Link to="/analyze" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid var(--accent-primary)', paddingBottom: '2px' }}>Analyze Now</Link>
         {userInfo ? (
           <>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Hi, {userInfo.name}</span>
+            <span style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginLeft: '1rem' }}>Hi, {userInfo.name}</span>
             <Link to="/history" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500 }}>History</Link>
             <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid var(--text-muted)', color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer' }}>
               Logout
@@ -39,7 +40,7 @@ const Navbar = () => {
           </>
         ) : (
           <>
-            <Link to="/login" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, transition: '0.2s' }}>Login</Link>
+            <Link to="/login" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, transition: '0.2s', marginLeft: '1rem' }}>Login</Link>
             <Link to="/register" className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.9rem', textDecoration: 'none' }}>Sign Up</Link>
           </>
         )}
