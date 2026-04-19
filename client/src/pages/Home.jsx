@@ -35,7 +35,7 @@ const Home = () => {
         formData.append('userId', userInfo._id);
       }
 
-      const response = await axios.post('http://localhost:5000/api/analysis/analyze-gap', formData, {
+      const response = await axios.post('https://blueprint-no08.onrender.com/api/analysis/analyze-gap', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 

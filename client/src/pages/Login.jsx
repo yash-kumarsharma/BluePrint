@@ -16,7 +16,7 @@ const Login = () => {
       setError(null);
       
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post('http://localhost:5000/api/auth/login', { email, password }, config);
+      const { data } = await axios.post('https://blueprint-no08.onrender.com/api/auth/login', { email, password }, config);
       
       // Save token and user info to local storage
       localStorage.setItem('userInfo', JSON.stringify(data));

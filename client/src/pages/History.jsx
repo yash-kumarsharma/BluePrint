@@ -24,7 +24,7 @@ const History = () => {
           }
         };
 
-        const { data } = await axios.get('http://localhost:5000/api/analysis/history', config);
+        const { data } = await axios.get('https://blueprint-no08.onrender.com/api/analysis/history', config);
         setHistory(data.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch history');
