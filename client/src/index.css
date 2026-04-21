@@ -1,16 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --bg-primary: #0B0E14;
-  --bg-secondary: #131823;
-  --accent-primary: #3B82F6;
-  --accent-secondary: #8B5CF6;
-  --text-main: #F3F4F6;
-  --text-muted: #9CA3AF;
+  /* COSMOS EDITORIAL BRUTALISM THEME */
+  --bg-primary: #FDFCFB; /* Warm stark white */
+  --bg-secondary: #FFFFFF;
+  --accent-primary: #000000; 
+  --accent-secondary: #333333; 
+  --text-main: #000000; /* Pure black text */
+  --text-muted: #555555; 
   
-  --glass-bg: rgba(255, 255, 255, 0.03);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  --cosmos-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
 
 * {
@@ -22,74 +21,89 @@
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: var(--bg-primary);
+  /* The Secret to the UXPilot Premium Aesthetic: A CAD Dotted Workspace Grid */
+  background-image: radial-gradient(rgba(0, 0, 0, 0.08) 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+  
   color: var(--text-main);
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(139, 92, 246, 0.15), transparent 25%);
   background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-/* Glassmorphism Utilities */
-.glass-panel {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+/* Mixed Typography Utilities */
+.font-serif {
+  font-family: 'Playfair Display', serif;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.02em; /* Serifs need to breathe */
 }
 
-.glass-panel:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px 0 rgba(59, 130, 246, 0.2);
-  border-color: rgba(255,255,255,0.12);
+/* ========================================= */
+/* MILKY WAY: CURSOR FLASHLIGHT EFFECTS       */
+/* ========================================= */
+
+.cursor-glow {
+  position: fixed;
+  top: 0; left: 0;
+  width: 600px; height: 600px;
+  pointer-events: none;
+  z-index: 1; /* Below the glass panels but above the stars */
+  background: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.08),
+    transparent 60%
+  );
+  /* Framer-motion handles X/Y translation instantly */
 }
 
-/* Stunning Buttons */
+/* Cosmos Image Gallery Cards */
+.cosmos-card {
+  background: var(--bg-secondary);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  position: relative;
+  z-index: 10;
+}
+
+.cosmos-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: var(--cosmos-shadow);
+}
+
+/* Cosmos "Pill" Buttons */
 .btn-primary {
-  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  background: var(--accent-primary);
   color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
+  padding: 14px 28px;
+  border-radius: 9999px; /* The infamous Pill shape */
   border: none;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  position: relative;
-  overflow: hidden;
-}
-
-.btn-primary::after {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%;
-  width: 50%; height: 100%;
-  background: linear-gradient(to right, transparent, rgba(255,255,255,0.3), transparent);
-  transform: skewX(-20deg);
-  animation: shine 3s infinite;
 }
 
 .btn-primary:hover {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
-  filter: brightness(1.1);
+  transform: scale(1.05);
+  background: #222222;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--text-main);
-  border: 1px solid var(--glass-border);
+  border: 1px solid var(--text-muted);
   padding: 12px 24px;
   border-radius: 8px;
   font-weight: 600;
@@ -97,15 +111,14 @@ body {
   cursor: pointer;
 }
 .btn-secondary:hover {
-  background: rgba(255,255,255,0.05);
-  border-color: var(--text-muted);
+  background: rgba(15, 23, 42, 0.05); /* text-main with opacity */
+  border-color: var(--text-main);
 }
 
-/* Form Inputs */
 .input-field {
   width: 100%;
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--glass-border);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   color: var(--text-main);
   padding: 14px 16px;
   border-radius: 8px;
@@ -128,22 +141,15 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #60A5FA, #A78BFA, #3B82F6);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradientText 4s linear infinite;
+  /* Removing color gradient for solid pitch black editorial feel */
+  color: #000000;
+  display: inline-block;
+  transition: transform 0.3s ease;
 }
 
-/* ========================================= */
-/* ADVANCED UI OVERHAUL ANIMATIONS SECTION */
-/* ========================================= */
-
-@keyframes gradientText {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+/* Add a cool interactive text hover effect */
+.text-gradient:hover {
+  transform: scale(1.02) rotate(-1deg);
 }
 
 @keyframes shine {
@@ -152,156 +158,47 @@ body {
   100% { left: 200%; }
 }
 
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-10px); }
-  100% { transform: translateY(0px); }
-}
-.animate-float {
-  animation: float 4s ease-in-out infinite;
+.animate-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
 }
-.animate-fade-in {
-  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
 
-/* Globe Particles CSS */
-.ai-globe-container {
-  position: relative;
-  width: 100%;
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.globe-core {
-  width: 150px;
-  height: 150px;
-  background: radial-gradient(circle, var(--accent-primary) 0%, transparent 60%);
-  border-radius: 50%;
-  box-shadow: 0 0 60px var(--accent-primary), insert 0 0 40px var(--accent-secondary);
-  animation: pulse-globe 4s ease-in-out infinite alternate;
-  position: absolute;
-}
-
-.globe-ring {
-  position: absolute;
-  border-radius: 50%;
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  animation: rotate-ring linear infinite;
-}
-.globe-ring:nth-child(1) { width: 250px; height: 100px; animation-duration: 10s; transform: rotate(45deg); }
-.globe-ring:nth-child(2) { width: 350px; height: 150px; animation-duration: 15s; transform: rotate(-30deg); border-color: rgba(59, 130, 246, 0.3);}
-.globe-ring:nth-child(3) { width: 450px; height: 200px; animation-duration: 20s; transform: rotate(80deg); }
-
-@keyframes rotate-ring {
-  0% { transform: rotate(0deg) rotateX(60deg); }
-  100% { transform: rotate(360deg) rotateX(60deg); }
-}
-
-@keyframes pulse-globe {
-  0% { transform: scale(1); filter: hue-rotate(0deg); opacity: 0.8;}
-  100% { transform: scale(1.1); filter: hue-rotate(45deg); opacity: 1;}
-}
-
-/* AI Scanning Laser Effect for Resume Upload Box */
-.scan-container {
-  position: relative;
-  overflow: hidden;
-}
-
-.scan-laser {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 2px;
-  background: var(--accent-primary);
-  box-shadow: 0 0 15px 2px var(--accent-primary);
-  animation: scan-vertical 2s linear infinite;
-  opacity: 0;
-  z-index: 10;
-}
-
-.is-scanning .scan-laser {
-  opacity: 1;
-}
-
-@keyframes scan-vertical {
-  0% { top: 0%; }
-  50% { top: 100%; }
-  100% { top: 0%; }
-}
-
-/* ========================================= */
-/* ULTIMATE UI: BENTO & NOISE & STEPPER      */
-/* ========================================= */
-
-body::after {
-  content: "";
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100%; height: 100vh;
-  /* An inline SVG noise grain filter for an organic film texture */
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-  opacity: 0.04;
-  pointer-events: none;
-  z-index: 9999;
-}
-
-/* Bento Grid Architecture */
+/* Bento Grid */
 .bento-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: minmax(auto, 300px);
   gap: 1.5rem;
 }
-
 .bento-item {
-  background: var(--glass-bg);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow);
-  border-radius: 20px;
+  background: var(--bg-secondary);
+  border-radius: 24px;
   padding: 1.5rem;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s;
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s;
   overflow: hidden;
   position: relative;
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.02);
 }
-
 .bento-item:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 15px 35px rgba(59, 130, 246, 0.15);
-  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: var(--cosmos-shadow);
 }
+.bento-tall { grid-row: span 2; }
+.bento-wide { grid-column: span 2; }
 
-.bento-tall {
-  grid-row: span 2;
-}
-.bento-wide {
-  grid-column: span 2;
-}
-
-.progress-ring-circle {
-  transition: stroke-dashoffset 1s ease-in-out;
-  transform: rotate(-90deg);
-  transform-origin: 50% 50%;
-}
-
-/* Connecting Stepper Glowing Lines */
+/* Dashboard Extras */
 .stepper-container {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
   position: relative;
 }
-
 .stepper-container::before {
   content: '';
   position: absolute;
@@ -310,12 +207,10 @@ body::after {
   background: linear-gradient(to bottom, var(--accent-primary), transparent);
   opacity: 0.3;
 }
-
 .stepper-node {
   position: relative;
   padding-left: 2.5rem;
 }
-
 .stepper-node::before {
   content: '';
   position: absolute;
@@ -324,4 +219,25 @@ body::after {
   border-radius: 50%;
   background: var(--accent-primary);
   box-shadow: 0 0 10px var(--accent-primary);
+}
+
+.scan-container {
+  position: relative;
+  overflow: hidden;
+}
+.scan-laser {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 2px;
+  background: var(--accent-primary);
+  box-shadow: 0 0 15px 2px var(--accent-primary);
+  animation: scan-vertical 2s linear infinite;
+  opacity: 0;
+  z-index: 10;
+}
+.is-scanning .scan-laser { opacity: 1; }
+@keyframes scan-vertical {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
 }

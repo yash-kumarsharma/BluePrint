@@ -13,35 +13,41 @@ const Navbar = () => {
 
   return (
     <nav style={{
-      padding: '1rem 2rem',
+      position: 'fixed',
+      top: '20px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      width: 'max-content',
+      minWidth: '500px',
+      padding: '0.8rem 2rem',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
-      borderBottom: '1px solid var(--glass-border)',
-      background: 'rgba(0,0,0,0.2)',
-      backdropFilter: 'blur(10px)',
-      position: 'sticky',
-      top: 0,
-      zIndex: 100
+      background: 'rgba(255, 255, 255, 0.7)',
+      backdropFilter: 'blur(20px) saturate(180%)',
+      WebkitBackdropFilter: 'blur(20px) saturate(180%)',
+      borderRadius: '999px',
+      border: '1px solid rgba(0, 0, 0, 0.05)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
+      zIndex: 1000
     }}>
-      <Link to="/" style={{ textDecoration: 'none', fontWeight: '800', fontSize: '1.5rem' }} className="text-gradient">
+      <Link to="/" style={{ textDecoration: 'none', fontWeight: '800', fontSize: '1.4rem', color: '#000', letterSpacing: '-1px' }}>
         BluePrint
       </Link>
       
-      <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center' }}>
-        <Link to="/analyze" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500, borderBottom: '1px solid var(--accent-primary)', paddingBottom: '2px' }}>Analyze Now</Link>
+      <div style={{ display: 'flex', gap: '2rem', alignItems: 'center', marginLeft: '3rem' }}>
+        <Link to="/analyze" style={{ color: '#000', textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem' }}>Analyze</Link>
         {userInfo ? (
           <>
-            <span style={{ color: 'var(--text-muted)', fontSize: '0.95rem', marginLeft: '1rem' }}>Hi, {userInfo.name}</span>
-            <Link to="/history" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 500 }}>History</Link>
-            <button onClick={handleLogout} style={{ background: 'transparent', border: '1px solid var(--text-muted)', color: 'white', padding: '6px 14px', borderRadius: '6px', cursor: 'pointer' }}>
+            <Link to="/history" style={{ color: '#000', textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem' }}>History</Link>
+            <button onClick={handleLogout} style={{ background: 'transparent', border: 'none', color: '#000', fontWeight: 600, cursor: 'pointer', fontSize: '0.95rem' }}>
               Logout
             </button>
           </>
         ) : (
           <>
-            <Link to="/login" style={{ color: 'var(--text-muted)', textDecoration: 'none', fontWeight: 500, transition: '0.2s', marginLeft: '1rem' }}>Login</Link>
-            <Link to="/register" className="btn-primary" style={{ padding: '8px 18px', fontSize: '0.9rem', textDecoration: 'none' }}>Sign Up</Link>
+            <Link to="/login" style={{ color: '#555', textDecoration: 'none', fontWeight: 600, fontSize: '0.95rem' }}>Login</Link>
+            <Link to="/register" className="btn-primary" style={{ padding: '10px 20px', fontSize: '0.9rem', textDecoration: 'none' }}>Join</Link>
           </>
         )}
       </div>
