@@ -1,8 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import axios from 'axios';
 import html2pdf from 'html2pdf.js';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer } from 'recharts';
-import { Download, TrendingUp, TrendingDown, AlignLeft, Target } from 'lucide-react';
+import { Download, TrendingUp, TrendingDown, AlignLeft, Target, Upload, Database, Cpu, Route, ShieldCheck, ArrowRight, FileCheck, Search } from 'lucide-react';
+import { API_ENDPOINTS } from '../config';
 
 const Home = () => {
   const [file, setFile] = useState(null);
@@ -10,14 +12,15 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
-  const [loadingText, setLoadingText] = useState('Extracting entities...');
+  const [loadingText, setLoadingText] = useState('Ingesting Vectors...');
+  const scrollIntoViewRef = useRef(null);
 
   const handleFileChange = (e) => setFile(e.target.files[0]);
 
   const handleAnalyze = async (e) => {
     e.preventDefault();
     if (!file || !jobDescription) {
-      setError("Please provide both a resume and a job description!");
+      setError("Provide both Resume and Job Description payloads.");
       return;
     }
 
@@ -25,8 +28,7 @@ const Home = () => {
       setLoading(true);
       setError(null);
       
-      // Cycle loading text for micro-interaction coolness
-      const texts = ['Extracting entities...', 'Identifying latent skills...', 'Calculating ATS heuristics...'];
+      const texts = ['Ingesting Vectors...', 'Decoding Skill Gaps...', 'Architecting Roadmap...', 'Verifying Match Parity...'];
       let ptr = 0;
       const loaderInterval = setInterval(() => {
         ptr = (ptr + 1) % texts.length;
@@ -42,12 +44,18 @@ const Home = () => {
         formData.append('userId', JSON.parse(userInfoStr)._id);
       }
 
-      const response = await axios.post('http://localhost:5000/api/analysis/analyze-gap', formData, {
+      const response = await axios.post(`${API_ENDPOINTS.ANALYSIS}/analyze-gap`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
       clearInterval(loaderInterval);
       setResult(response.data.data);
+      
+      // Smooth scroll to results
+      setTimeout(() => {
+        scrollIntoViewRef.current?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+      
     } catch (err) {
       setError(err.response?.data?.message || "An error occurred during analysis.");
     } finally {
@@ -56,141 +64,192 @@ const Home = () => {
   };
 
   const handleDownloadPdf = () => {
-    const element = document.getElementById('roadmap-content');
-    html2pdf().from(element).set({
-      margin: 0.2, filename: 'Blueprint_Analysis.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#0B0E14' },
-      jsPDF: { unit: 'in', format: 'a4', orientation: 'landscape' }
-    }).save();
+    const element = document.getElementById('blueprint-results');
+    const opt = {
+      margin: 0,
+      filename: 'BluePrint_Carrier_Architecture.pdf',
+      image: { type: 'jpeg', quality: 1 },
+      html2canvas: { scale: 2, useCORS: true, backgroundColor: '#FFFFFF' },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    html2pdf().from(element).set(opt).save();
   };
 
-  // Prepare radar data
   const radarData = result ? [
     ...result.matchedSkills.slice(0, 4).map(s => ({ skill: s, value: 100 })),
     ...result.missingSkills.slice(0, 4).map(s => ({ skill: s, value: 20 }))
   ] : [];
 
   return (
-    <div className="container animate-fade-in" style={{ paddingBottom: '5rem' }}>
-      <header style={{ textAlign: 'center', marginBottom: '2rem' }}>
-        <h1 className="text-gradient" style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>Analysis Matrix</h1>
-        <p style={{ color: 'var(--text-muted)' }}>Input your vectors to generate the Bento Diagnostic.</p>
+    <div className="container" style={{ paddingBottom: '10rem', position: 'relative' }}>
+      
+      {/* 1. Workbench Header */}
+      <header style={{ textAlign: 'center', margin: '4rem 0 6rem' }}>
+        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+          <span style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Blueprint Studio</span>
+          <h1 className="font-serif" style={{ fontSize: '4.5rem', fontWeight: 800, color: '#000', lineHeight: 1.1 }}>Analysis Workbench.</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginTop: '1rem' }}>Map your professional growth against target industry vectors.</p>
+        </motion.div>
       </header>
 
-      {/* Upload Top Section */}
-      <div className={`glass-panel scan-container ${loading ? 'is-scanning' : ''}`} style={{ padding: '2rem', marginBottom: '3rem', maxWidth: '800px', margin: '0 auto 3rem auto' }}>
-        <div className="scan-laser"></div>
-        {loading && <div style={{ position: 'absolute', top: '10px', right: '20px', color: 'var(--accent-primary)', fontSize: '0.9rem', zIndex: 30, background: 'rgba(0,0,0,0.6)', padding: '4px 10px', borderRadius: '8px' }}>{loadingText}</div>}
-        
-        <form onSubmit={handleAnalyze} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem', position: 'relative', zIndex: 20 }}>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ marginBottom: '0.5rem', fontWeight: 500, color: 'var(--text-muted)' }}>Resume Payload (PDF)</label>
-            <input type="file" accept=".pdf" onChange={handleFileChange} className="input-field" style={{ height: '100%' }} />
+      {/* 2. Vector Ingest Station */}
+      <motion.div 
+        initial={{ opacity: 0, y: 30 }} 
+        animate={{ opacity: 1, y: 0 }} 
+        transition={{ delay: 0.2, duration: 1 }}
+        style={{ 
+          background: '#fff', 
+          borderRadius: '40px', 
+          border: '1px solid rgba(0,0,0,0.06)', 
+          padding: '4rem', 
+          maxWidth: '1000px', 
+          margin: '0 auto 6rem',
+          boxShadow: '0 40px 100px -20px rgba(0,0,0,0.04)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}
+      >
+        <AnimatePresence>
+          {loading && (
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              style={{ position: 'absolute', inset: 0, background: 'rgba(255,255,255,0.95)', zIndex: 50, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+            >
+              <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 3, ease: "linear" }} style={{ marginBottom: '2rem' }}>
+                 <Cpu size={60} strokeWidth={1} />
+              </motion.div>
+              <h3 className="font-serif" style={{ fontSize: '2rem', fontWeight: 800 }}>{loadingText}</h3>
+              <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>The AI is architecting your roadmap.</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <form onSubmit={handleAnalyze} style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '3rem' }}>
+          <div>
+            <div style={{ padding: '2rem', borderRadius: '24px', border: '2px dashed rgba(0,0,0,0.1)', textAlign: 'center', marginBottom: '2rem', background: 'rgba(0,0,0,0.01)' }}>
+              <Upload size={32} style={{ marginBottom: '1rem', color: 'var(--text-muted)' }} />
+              <h4 style={{ fontWeight: 700, marginBottom: '0.5rem' }}>Upload Resume</h4>
+              <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)', marginBottom: '1.5rem' }}>PDF Vectors Only</p>
+              <input type="file" accept=".pdf" onChange={handleFileChange} style={{ fontSize: '0.8rem', width: '100%' }} />
+            </div>
+            {error && <div style={{ color: '#ef4444', fontSize: '0.9rem', padding: '10px', background: 'rgba(239, 68, 68, 0.05)', borderRadius: '10px', border: '1px solid rgba(239, 68, 68, 0.1)' }}>{error}</div>}
           </div>
+
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <label style={{ marginBottom: '0.5rem', fontWeight: 500, color: 'var(--text-muted)' }}>Target JD Pattern</label>
-            <textarea rows="3" className="input-field" placeholder="Paste JD..." value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} />
-          </div>
-          
-          <div style={{ gridColumn: 'span 2' }}>
-            {error && <div style={{ color: '#ef4444', marginBottom: '1rem' }}>{error}</div>}
-            <button type="submit" className="btn-primary" style={{ width: '100%' }} disabled={loading}>
-              {loading ? 'Initializing Neural Link...' : 'Execute Analysis'}
+            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+              <label style={{ fontWeight: 700, fontSize: '0.9rem', marginBottom: '0.8rem', display: 'flex', alignItems: 'center', gap: '8px' }}><Search size={16}/> Target JD Pattern</label>
+              <textarea 
+                className="input-field" 
+                placeholder="Paste the Job Description here to initiate gap analysis..." 
+                value={jobDescription} 
+                onChange={(e) => setJobDescription(e.target.value)} 
+                style={{ flex: 1, borderRadius: '16px', background: 'rgba(0,0,0,0.02)', padding: '1.5rem', resize: 'none' }}
+              />
+            </div>
+            <button type="submit" className="btn-primary" style={{ marginTop: '2rem', width: '100%', height: '64px', borderRadius: '16px', fontSize: '1.2rem' }}>
+              Execute Analysis <ArrowRight />
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
 
-      {/* BENTO GRID DASHBOARD */}
-      {result && (
-        <div id="roadmap-content" style={{ position: 'relative' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <h2 style={{ fontSize: '2rem' }}>Diagnostic Data</h2>
-            <button onClick={handleDownloadPdf} className="btn-secondary" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <Download size={18} /> Export Matrix
-            </button>
-          </div>
-
-          <div className="bento-grid">
-            
-            {/* TILE 1: Score Metrics (Wide) */}
-            <div className="bento-item bento-wide" style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', background: 'radial-gradient(ellipse at top left, rgba(59, 130, 246, 0.1), transparent)' }}>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '4rem', fontWeight: '800', color: result.matchPercentage > 70 ? '#10B981' : '#F59E0B' }}>{result.matchPercentage}%</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '1.1rem', letterSpacing: '2px' }}>JD MATCH</div>
+      {/* 3. Diagnostic Results */}
+      <AnimatePresence>
+        {result && (
+          <motion.div id="blueprint-results" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
+            <div ref={scrollIntoViewRef} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem', padding: '0 1rem' }}>
+              <div>
+                <h2 className="font-serif" style={{ fontSize: '3.5rem', fontWeight: 800 }}>Analysis Matrix.</h2>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem' }}>Vectorized diagnostic of your professional ecosystem.</p>
               </div>
-              <div style={{ height: '80px', width: '1px', background: 'var(--glass-border)' }}></div>
-              <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '4rem', fontWeight: '800', color: result.atsScore > 75 ? '#3B82F6' : '#EF4444' }}>{result.atsScore}%</div>
-                <div style={{ color: 'var(--text-muted)', fontSize: '1.1rem', letterSpacing: '2px' }}>ATS PREDICTION</div>
-              </div>
+              <button onClick={handleDownloadPdf} className="btn-secondary" style={{ display: 'flex', gap: '8px', alignItems: 'center', padding: '14px 28px' }}>
+                <Download size={20} /> Export Matrix
+              </button>
             </div>
 
-            {/* TILE 2: Radar Chart (Tall) */}
-            <div className="bento-item bento-tall" style={{ display: 'flex', flexDirection: 'column' }}>
-              <h3 style={{ color: 'var(--accent-secondary)', marginBottom: '1rem', display:'flex', alignItems:'center', gap:'8px' }}>
-                <Target size={20} /> Skill Galaxy Radar
-              </h3>
-              <div style={{ flex: 1, minHeight: '300px' }}>
-                <ResponsiveContainer width="100%" height="100%">
-                  <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
-                    <PolarGrid stroke="rgba(255,255,255,0.1)" />
-                    <PolarAngleAxis dataKey="skill" tick={{ fill: 'var(--text-muted)', fontSize: 11 }} />
-                    <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                    <Radar name="Skills" dataKey="value" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.4} />
-                  </RadarChart>
-                </ResponsiveContainer>
+            <div className="bento-grid">
+              {/* TILE 1: Primary Metrics */}
+              <div className="bento-item bento-wide" style={{ display: 'flex', background: '#fff', padding: '0' }}>
+                 <div style={{ flex: 1, padding: '3rem', borderRight: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
+                    <div style={{ fontSize: '5rem', fontWeight: 800, color: result.matchPercentage > 75 ? '#000' : '#F59E0B' }}>{result.matchPercentage}<span style={{ fontSize: '2rem' }}>%</span></div>
+                    <div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px' }}>JD Parity</div>
+                 </div>
+                 <div style={{ flex: 1, padding: '3rem', textAlign: 'center' }}>
+                    <div style={{ fontSize: '5rem', fontWeight: 800, color: result.atsScore > 80 ? '#000' : '#EF4444' }}>{result.atsScore}<span style={{ fontSize: '2rem' }}>%</span></div>
+                    <div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px' }}>ATS Prediction</div>
+                 </div>
               </div>
-            </div>
 
-            {/* TILE 3: Market Trends & Resume Feedback */}
-            <div className="bento-item">
-              <h3 style={{ color: '#3B82F6', marginBottom: '1rem', display:'flex', alignItems:'center', gap:'8px' }}>
-                <AlignLeft size={20} /> AI Corrections
-              </h3>
-              <ul style={{ paddingLeft: '1.2rem', color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                {result.resumeImprovements?.slice(0,3).map((imp, idx) => (
-                  <li key={idx}>{imp}</li>
-                )) || <li>No syntax errors detected in payload.</li>}
-              </ul>
-              
-              <div style={{ marginTop: '2rem', borderTop: '1px solid var(--glass-border)', paddingTop: '1rem' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem', marginBottom: '0.5rem' }}>
-                  <span style={{ color: 'var(--text-main)' }}>{result.missingSkills[0] || 'CloudTech'} Demand</span>
-                  <span style={{ color: '#10B981', display:'flex', alignItems:'center', gap:'4px' }}><TrendingUp size={14}/> +24% YoY</span>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.9rem' }}>
-                  <span style={{ color: 'var(--text-main)' }}>Legacy Systems</span>
-                  <span style={{ color: '#EF4444', display:'flex', alignItems:'center', gap:'4px' }}><TrendingDown size={14}/> -8% YoY</span>
+              {/* TILE 2: Skill Radar */}
+              <div className="bento-item bento-tall" style={{ background: '#fff', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <Target size={24} /> Radar Diagnostic
+                </h3>
+                <div style={{ flex: 1, minHeight: '350px' }}>
+                  <ResponsiveContainer width="100%" height="100%">
+                    <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
+                      <PolarGrid stroke="rgba(0,0,0,0.05)" />
+                      <PolarAngleAxis dataKey="skill" tick={{ fill: '#666', fontSize: 11, fontWeight: 600 }} />
+                      <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                      <Radar name="Skills" dataKey="value" stroke="#000" fill="#000" fillOpacity={0.1} />
+                    </RadarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-            </div>
 
-            {/* TILE 4: Vertical Glowing Roadmap (Wide & Tall) */}
-            <div className="bento-item bento-wide bento-tall" style={{ padding: '2rem' }}>
-              <h3 style={{ fontSize: '1.5rem', marginBottom: '2rem', color: 'var(--text-main)' }}>Execution Roadmap</h3>
-              
-              <div className="stepper-container">
-                {result.roadmap.map((step, index) => (
-                  <div key={index} className="stepper-node">
-                    <div style={{ background: 'rgba(0,0,0,0.3)', padding: '1.5rem', borderRadius: '12px', border: '1px solid var(--glass-border)' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
-                        <h4 style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }}>Phase {step.step}: {step.task}</h4>
-                        <span style={{ background: 'rgba(255,255,255,0.05)', padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                          Timeframe: {step.duration}
-                        </span>
-                      </div>
-                      <p style={{ color: 'var(--text-muted)', fontSize: '0.95rem' }}>Execute immediately to patch detected skill gaps and improve overall ATS survival chances.</p>
+              {/* TILE 3: Corrections */}
+              <div className="bento-item" style={{ background: '#000', color: '#fff' }}>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                  <FileCheck size={24} /> System Corrections
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                  {result.resumeImprovements?.slice(0,3).map((imp, i) => (
+                    <div key={i} style={{ display: 'flex', gap: '12px', fontSize: '0.95rem', opacity: 0.8, borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '1rem' }}>
+                       <span style={{ color: 'var(--accent-primary)' }}>•</span> {imp}
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
-            </div>
 
-          </div>
-        </div>
-      )}
+              {/* TILE 4: Global Trends */}
+              <div className="bento-item" style={{ background: '#fff', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+                   <span style={{ fontWeight: 800 }}>{result.missingSkills[0] || 'GenAI'} Demand</span>
+                   <span style={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: '4px' }}><TrendingUp size={16}/> +33%</span>
+                </div>
+                <motion.div style={{ height: '2px', background: 'rgba(0,0,0,0.05)', position: 'relative' }}>
+                   <motion.div initial={{ width: 0 }} whileInView={{ width: '75%' }} style={{ position: 'absolute', top: 0, left: 0, height: '100%', background: '#000' }} />
+                </motion.div>
+                <p style={{ marginTop: '1.5rem', fontSize: '0.9rem', color: 'var(--text-muted)' }}>Market indices suggest significant expansion in your missing vector node.</p>
+              </div>
+
+              {/* TILE 5: Roadmap (Big) */}
+              <div className="bento-item bento-wide" style={{ background: '#fff', border: '1px solid #000' }}>
+                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                    <h3 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800 }}>Execution Roadmap.</h3>
+                    <div style={{ display: 'flex', gap: '8px', color: 'var(--text-muted)' }}><Database size={18}/><Route size={18}/></div>
+                 </div>
+
+                 <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {result.roadmap.map((step, i) => (
+                      <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '2rem' }}>
+                         <div style={{ fontSize: '2rem', fontWeight: 800, color: 'rgba(0,0,0,0.1)', fontFamily: 'serif' }}>0{i+1}</div>
+                         <div style={{ borderBottom: '1px solid rgba(0,0,0,0.05)', paddingBottom: '2rem' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
+                               <h4 style={{ fontSize: '1.4rem', fontWeight: 800 }}>{step.task}</h4>
+                               <span style={{ background: '#000', color: '#fff', padding: '4px 14px', borderRadius: '99px', fontSize: '0.8rem', fontWeight: 600 }}>T-Minus {step.duration}</span>
+                            </div>
+                            <p style={{ color: 'var(--text-muted)', lineHeight: 1.6 }}>Deconstruct the target knowledge vector through prioritized learning modules to bridge the detected skill gap.</p>
+                         </div>
+                      </div>
+                    ))}
+                 </div>
+              </div>
+
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

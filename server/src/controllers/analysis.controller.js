@@ -11,9 +11,9 @@ exports.analyzeSkillGap = async (req, res) => {
 
     // 1. Validate Input
     if (!req.file || !jobDescription) {
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Please provide both a resume (PDF file) and a jobDescription (text).' 
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide both a resume (PDF file) and a jobDescription (text).'
       });
     }
 
@@ -62,26 +62,55 @@ ${jobDescription}
 """
     `;
 
-    // 4. Call Google Gemini API (Using Axios for stability)
-    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`;
-    
-    const response = await axios.post(geminiUrl, {
-      contents: [{
-        parts: [{ text: prompt }]
-      }]
-    });
+    // 4. Robust AI Analysis with Fallback Logic
+    const models = ['gemini-2.5-flash', 'gemini-3-flash'];
+    let response = null;
+    let fallbackUsed = false;
+
+    for (const modelId of models) {
+      try {
+        console.log(`[AI] Attempting analysis with node: ${modelId}...`);
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+
+        response = await axios.post(geminiUrl, {
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
+        });
+
+        if (response.data) {
+          console.log(`[AI] Analysis successful via ${modelId}`);
+          break; // Exit loop on success
+        }
+      } catch (err) {
+        const status = err.response?.status;
+        const errorMsg = err.response?.data?.error?.message || err.message;
+
+        if (status === 503 || status === 429) {
+          console.warn(`[AI] Model ${modelId} is throttled/busy. Error: ${errorMsg}`);
+          console.warn(`[AI] Initializing fail-over to next node...`);
+          fallbackUsed = true;
+          continue; // Try next model in the list
+        } else {
+          // If it's a different error (e.g. 400 Bad Request), don't fallback
+          throw err;
+        }
+      }
+    }
+
+    if (!response) {
+      throw new Error('All AI nodes are currently at peak capacity. Please retry in 60 seconds.');
+    }
 
     // 5. Parse the Response
     let aiResponseText = response.data.candidates[0].content.parts[0].text;
-    
-    // Sometimes Gemini still adds markdown even when told not to, so we clean it.
-    if (aiResponseText.startsWith('```json')) {
-      aiResponseText = aiResponseText.replace(/```json/g, '').replace(/```/g, '').trim();
-    } else if (aiResponseText.startsWith('```')) {
-      aiResponseText = aiResponseText.replace(/```/g, '').trim();
-    }
 
-    const analysisData = JSON.parse(aiResponseText);
+    // Robust JSON extraction
+    const jsonMatch = aiResponseText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      throw new Error('AI analysis produced invalid output structure.');
+    }
+    const analysisData = JSON.parse(jsonMatch[0]);
 
     // Save record to MongoDB Database
     let userIdObj = null;
@@ -108,8 +137,8 @@ ${jobDescription}
 
   } catch (error) {
     console.error('AI Analysis Error:', error?.response?.data || error.message);
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       message: 'Failed to analyze the resume and JD.'
     });
   }
