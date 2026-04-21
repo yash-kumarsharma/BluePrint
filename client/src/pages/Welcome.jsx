@@ -1,205 +1,225 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, BrainCircuit, Target, Code, ShieldCheck, Zap } from 'lucide-react';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { ArrowRight, BrainCircuit, Target, Code, ShieldCheck, Zap, Globe, Cpu, BarChart3, Layers, Send, FileSearch, Database, Route, Network, Upload, ArrowUpRight, GraduationCap, Map, Activity } from 'lucide-react';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { useRef, useState } from 'react';
 import GalaxyBackground from '../components/GalaxyBackground';
 import InteractiveGlobe from '../components/InteractiveGlobe';
 
-// Framer Variants
-const fadeUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-};
-
+// Animation Variants
 const staggerContainer = {
   hidden: { opacity: 0 },
-  visible: {
+  show: {
     opacity: 1,
-    transition: { staggerChildren: 0.2 }
+    transition: {
+      staggerChildren: 0.15
+    }
   }
 };
 
-const ParallaxCard = ({ children, speed = 0.1, top = "10%", left = "auto", right = "auto", width = "350px" }) => {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"]
-  });
+const cardItem = {
+  hidden: { opacity: 0, y: 30 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
 
-  const y = useTransform(scrollYProgress, [0, 1], [100 * speed, -100 * speed]);
-
+// Workflow Card Component (Apple Style)
+const WorkflowCard = ({ number, title, description, image }) => {
   return (
-    <motion.div
-      ref={ref}
+    <motion.div 
+      variants={cardItem}
+      whileHover={{ y: -10 }}
       style={{ 
-        position: 'absolute', 
-        top, left, right, width, 
-        y, 
-        zIndex: 10 
+        background: '#fff',
+        borderRadius: '32px',
+        padding: '2.5rem',
+        height: '400px',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        border: '1px solid rgba(0,0,0,0.04)',
+        boxShadow: '0 15px 35px rgba(0,0,0,0.03)',
+        cursor: 'pointer',
+        position: 'relative',
+        overflow: 'hidden'
       }}
-      initial={{ opacity: 0, scale: 0.9 }}
-      whileInView={{ opacity: 1, scale: 1 }}
-      viewport={{ once: false, amount: 0.2 }}
-      transition={{ duration: 0.8 }}
-      className="cosmos-card"
     >
-      {children}
+      <div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
+          <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Step {number}</span>
+          <motion.div 
+            whileHover={{ x: 5, y: -5 }}
+            style={{ background: '#000', padding: '10px', borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+          >
+            <ArrowUpRight size={16} />
+          </motion.div>
+        </div>
+        <h3 className="font-serif" style={{ fontSize: '2.4rem', fontWeight: 800, color: '#000', marginBottom: '0.8rem', lineHeight: 1.1 }}>{title}</h3>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.4, maxWidth: '240px' }}>{description}</p>
+      </div>
+      <div style={{ position: 'absolute', bottom: '-40px', right: '-20px', width: '200px', opacity: 0.8 }}>
+          <img src={image} alt={title} style={{ width: '100%', borderRadius: '24px' }} />
+      </div>
     </motion.div>
   );
 };
 
 const Welcome = () => {
-  const containerRef = useRef(null);
+  const [email, setEmail] = useState('');
+  const heroRef = useRef(null);
+  const finalCallRef = useRef(null);
+  
+  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
+  const { scrollYProgress: finalScroll } = useScroll({ target: finalCallRef, offset: ["start end", "center center", "end start"] });
+
+  const galaxyOpacity = useTransform(heroScroll, [0, 0.7], [1, 0]);
+  const ctaScale = useTransform(finalScroll, [0, 0.5, 1], [0.8, 1.1, 0.8]);
+  const finalBgOpacity = useTransform(finalScroll, [0, 0.4, 0.6, 1], [0, 1, 1, 0]);
+
+  const handleSubscribe = (e) => {
+    e.preventDefault();
+    alert(`Subscribed: ${email}`);
+    setEmail('');
+  };
 
   return (
-    <div ref={containerRef} style={{ overflowX: 'hidden', paddingBottom: '10rem' }}>
+    <div style={{ overflowX: 'hidden' }}>
       
-      {/* 1. Hero Section - Galaxy localized here */}
-      <section style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem', position: 'relative', zIndex: 10, overflow: 'hidden' }}>
-        <GalaxyBackground />
-        
+      {/* 1. Hero Section - Refined for Viva */}
+      <section ref={heroRef} style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem', position: 'relative', zIndex: 10, overflow: 'hidden' }}>
+        <motion.div style={{ position: 'absolute', inset: 0, opacity: galaxyOpacity }}><GalaxyBackground /></motion.div>
         <motion.h1 
-          initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.3 }} variants={fadeUp}
-          style={{ fontSize: '6.5rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05, marginBottom: '2rem', color: '#000' }}
+          initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          style={{ fontSize: '6rem', fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1, marginBottom: '2rem', color: '#000' }}
         >
-          Your space<br/>
-          <span className="font-serif">for inspiration.</span>
+          BluePrint:<br/><span className="font-serif">The AI Career Optimizer.</span>
         </motion.h1>
-        
-        <motion.p 
-          initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.3 }} variants={fadeUp} transition={{ delay: 0.2 }}
-          style={{ fontSize: '1.4rem', color: 'var(--text-muted)', maxWidth: '650px', marginBottom: '3.5rem', fontWeight: 500, letterSpacing: '-0.01em' }}
-        >
-          BluePrint analyzes your resume against target job descriptions, identifies critical skill gaps, and maps them onto the global job market.
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 1 }} style={{ fontSize: '1.4rem', color: 'var(--text-muted)', maxWidth: '750px', marginBottom: '3.5rem', fontWeight: 500, letterSpacing: '-0.01em', lineHeight: 1.5 }}>
+          AI-powered profile analysis, skill-gap detection, and personalized learning roadmaps to help you bridge the gap between your resume and your dream role.
         </motion.p>
-
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.3 }} variants={fadeUp} transition={{ delay: 0.4 }} style={{ display: 'flex', gap: '1.5rem' }}>
-          <Link to="/analyze" className="btn-primary" style={{ padding: '16px 36px', fontSize: '1.2rem', textDecoration: 'none' }}>
-            Initiate Scan <ArrowRight size={20} />
-          </Link>
-          <a href="#gallery" className="btn-secondary" style={{ padding: '16px 36px', fontSize: '1.2rem', textDecoration: 'none', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)' }}>
-            Discover More
-          </a>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} style={{ display: 'flex', gap: '1.5rem' }}>
+          <Link to="/analyze" className="btn-primary" style={{ padding: '20px 44px', fontSize: '1.3rem', textDecoration: 'none' }}>Initiate Scan <ArrowRight size={22} /></Link>
+          <a href="#workflow" className="btn-secondary" style={{ padding: '18px 44px', fontSize: '1.3rem', textDecoration: 'none', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', borderRadius: '999px' }}>Explore Process</a>
         </motion.div>
       </section>
 
-      {/* 2. Organic Parallax Gallery (Cosmos Style) */}
-      <section id="gallery" style={{ position: 'relative', height: '180vh', marginTop: '5rem' }}>
-        
-        <div style={{ position: 'sticky', top: '15vh', width: '100%', textAlign: 'center', zIndex: 5, padding: '0 2rem' }}>
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            viewport={{ once: false }}
-            style={{ fontSize: '4.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#000', marginBottom: '1.5rem' }}
-          >
-            Engineering <span className="font-serif">Modern Careers.</span>
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            viewport={{ once: false }}
-            transition={{ delay: 0.1 }}
-            style={{ fontSize: '1.2rem', color: 'var(--text-muted)', maxWidth: '600px', margin: '0 auto', lineHeight: 1.6 }}
-          >
-            We don't just read your resume; we understand the latent potential within your vector mapping.
-          </motion.p>
+      {/* 2. Trusted By */}
+      <section className="logo-marquee-container" style={{ padding: '3rem 0' }}>
+        <div className="logo-marquee">
+          {["GOOGLE", "AMAZON", "META", "STRIPE", "NETFLIX", "COSMOS", "OPENAI", "VERCEL"].map((logo, i) => (
+            <span key={i} className="logo-item">{logo}</span>
+          )).concat(["GOOGLE", "AMAZON", "META", "STRIPE", "NETFLIX", "COSMOS", "OPENAI", "VERCEL"].map((logo, i) => (
+            <span key={i+8} className="logo-item">{logo}</span>
+          )))}
         </div>
-
-        {/* Scattered Parallax Images */}
-        <ParallaxCard speed={2} top="10%" left="10%" width="400px">
-          <img src="/blueprint_resume_scan_1776623648482.png" alt="Scanner" style={{ width: '100%', borderRadius: '24px' }} />
-        </ParallaxCard>
-
-        <ParallaxCard speed={5} top="35%" right="12%" width="380px">
-          <div style={{ padding: '2rem' }}>
-            <h3 className="font-serif" style={{ fontSize: '2rem', marginBottom: '1rem' }}>ATS Intelligence.</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Automated action-verb optimization and structural validation for modern recruitment loops.</p>
-          </div>
-        </ParallaxCard>
-
-        <ParallaxCard speed={3} top="60%" left="15%" width="420px">
-          <img src="/blueprint_roadmap_1776623669162.png" alt="Roadmap" style={{ width: '100%', borderRadius: '24px' }} />
-        </ParallaxCard>
-
-        <ParallaxCard speed={6} top="80%" right="15%" width="350px">
-          <div style={{ padding: '2rem' }}>
-            <ShieldCheck size={40} style={{ marginBottom: '1rem' }} />
-            <h3 style={{ fontSize: '1.5rem', fontWeight: 700 }}>Localized Execution.</h3>
-            <p style={{ color: 'var(--text-muted)' }}>Every step validated against real-world market intelligence.</p>
-          </div>
-        </ParallaxCard>
-
       </section>
 
-      {/* 3. The Interactive Sphere Section */}
-      <motion.section 
-        initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.3 }} variants={fadeUp}
-        className="container" style={{ textAlign: 'center', margin: '15rem auto' }}
-      >
-        <h2 style={{ fontSize: '4.5rem', fontWeight: 800, letterSpacing: '-0.05em', color: '#000' }}>
-          Explore <span className="font-serif">the Market Sphere.</span>
-        </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem', letterSpacing: '-0.01em', marginBottom: '2rem' }}>A physically reactive entity simulating global skill demand.</p>
+      {/* 3. Workflow Gallery (Simplified Copy) */}
+      <section id="workflow" className="container" style={{ padding: '6rem 2rem', position: 'relative' }}>
+          <div style={{ marginBottom: '4rem', maxWidth: '800px' }}>
+            <h2 className="font-serif" style={{ fontSize: '4rem', fontWeight: 800, marginBottom: '1.2rem' }}>Workflow.</h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem' }}>
+               Three simple steps to redefine your career. <span style={{ color: '#000', fontWeight: 700 }}>Ingest. Decode. Optimize.</span>
+            </p>
+          </div>
+
+          <motion.div 
+            variants={staggerContainer} 
+            initial="hidden" 
+            whileInView="show" 
+            viewport={{ once: true, amount: 0.2 }}
+            style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}
+          >
+            <WorkflowCard number="01" title="Ingest." description="Upload your professional history for deep AI decomposition." image="/resume_scan.png" />
+            <WorkflowCard number="02" title="Decode." description="Compare your profile against target JDs to detect skill gaps." image="/market_mesh.png" />
+            <WorkflowCard number="03" title="Optimize." description="Get your learning roadmap and track your ATS score progress." image="/roadmap.png" />
+          </motion.div>
+      </section>
+
+      {/* 4. Interactive Sphere - Tightened Spacing */}
+      <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false, amount: 0.3 }} className="container" style={{ textAlign: 'center', margin: '4rem auto 6rem' }}>
+        <h2 style={{ fontSize: '4.5rem', fontWeight: 800, letterSpacing: '-0.05em', color: '#000', marginBottom: '1.2rem' }}>The Market <span className="font-serif">Pulse.</span></h2>
+        <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>Experience the real-time skill ecosystem through our physically reactive data sphere.</p>
         <InteractiveGlobe />
       </motion.section>
 
-      {/* 4. Grid Features Section */}
-      <motion.section 
-        initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.2 }} variants={fadeUp}
-        className="container" style={{ padding: '6rem 2rem', position: 'relative', zIndex: 10 }}
-      >
+      {/* 5. Key Features Ecosystem */}
+      <motion.section className="container" style={{ padding: '3rem 2rem 8rem', position: 'relative', zIndex: 10 }}>
+        <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: false }} transition={{ duration: 1, ease: "circOut" }} style={{ height: '1px', background: 'rgba(0,0,0,0.1)', marginBottom: '4rem', transformOrigin: 'center' }} />
         <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-          <h2 style={{ fontSize: '4rem', marginBottom: '1.2rem', fontWeight: 800, letterSpacing: '-0.05em' }}>
-            Search <span className="font-serif">the way you think.</span>
-          </h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem' }}>Everything connected, optimized, and yours.</p>
+          <h2 style={{ fontSize: '4rem', marginBottom: '1rem', fontWeight: 800, letterSpacing: '-0.05em' }}>Core <span className="font-serif">Capabilities.</span></h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem' }}>BluePrint is built with next-gen career architecture logic.</p>
         </div>
-
-        <motion.div variants={staggerContainer} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
+        
+        <div className="bento-grid">
+          <motion.div className="bento-item bento-wide" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }}>
+            <BrainCircuit size={40} style={{ marginBottom: '1.5rem' }} />
+            <h3 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem' }}>AI-Powered Skill Assessment</h3>
+            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.6 }}>Deep-vector profile analysis identifying subtle skill nuances and latent professional advantages.</p>
+            <div style={{ position: 'absolute', bottom: '-20px', right: '-20px', opacity: 0.1 }}><Database size={150} /></div>
+          </motion.div>
           
-          <motion.div variants={fadeUp} className="cosmos-card" style={{ padding: '3.5rem' }}>
-            <div style={{ background: '#000', width: '60px', height: '60px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '2rem' }}>
-              <BrainCircuit size={32} />
-            </div>
-            <h3 style={{ fontSize: '1.6rem', marginBottom: '1.2rem', fontWeight: 800 }}>Deep NLP Logic</h3>
-            <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1.05rem' }}>Semantic extraction of subtle nuances from your professional history vs target job requirements.</p>
+          <motion.div className="bento-item" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }}>
+             <GraduationCap size={40} style={{ marginBottom: '1.5rem' }} />
+             <h3 style={{ fontSize: '1.7rem', fontWeight: 800, marginBottom: '1rem' }}>Personalized Paths</h3>
+             <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>Dynamic bridges connecting your current state to your target market.</p>
           </motion.div>
-
-          <motion.div variants={fadeUp} className="cosmos-card" style={{ padding: '3.5rem' }}>
-            <div style={{ background: '#000', width: '60px', height: '60px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '2rem' }}>
-              <Target size={32} />
-            </div>
-            <h3 style={{ fontSize: '1.6rem', marginBottom: '1.2rem', fontWeight: 800 }}>Bento Analysis</h3>
-            <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1.05rem' }}>Experience your competitive advantages visualized in high-fidelity radar charts.</p>
+          
+          <motion.div className="bento-item" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }}>
+             <Map size={40} style={{ marginBottom: '1.5rem' }} />
+             <h3 style={{ fontSize: '1.7rem', fontWeight: 800, marginBottom: '1rem' }}>Role Mapping</h3>
+             <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.6 }}>Real-time synchronization with high-growth roles where your unique skills carry maximum leverage.</p>
           </motion.div>
-
-          <motion.div variants={fadeUp} className="cosmos-card" style={{ padding: '3.5rem' }}>
-            <div style={{ background: '#000', width: '60px', height: '60px', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', marginBottom: '2rem' }}>
-              <Code size={32} />
-            </div>
-            <h3 style={{ fontSize: '1.6rem', marginBottom: '1.2rem', fontWeight: 800 }}>Dynamic Steps</h3>
-            <p style={{ color: 'var(--text-muted)', lineHeight: 1.7, fontSize: '1.05rem' }}>Follow the glowing vertical roadmap dictating exactly what to learn and in what sequence.</p>
+          
+          <motion.div className="bento-item bento-wide" initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: false }}>
+             <Activity size={40} style={{ marginBottom: '1.5rem' }} />
+             <h3 style={{ fontSize: '2rem', fontWeight: 800, marginBottom: '1rem' }}>Live Progress Tracking</h3>
+             <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.6 }}>Your blueprint evolves in real-time. We track your progress, identify your current ATS score, and adjust roadmaps automatically.</p>
           </motion.div>
-
-        </motion.div>
+        </div>
       </motion.section>
 
-      {/* 5. Footer */}
-      <footer style={{ background: '#FFFFFF', borderTop: '1px solid rgba(0,0,0,0.05)', padding: '5rem 2rem', position: 'relative', zIndex: 10, marginTop: '10rem' }}>
-        <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0' }}>
-          <div>
-            <h3 style={{ fontSize: '1.8rem', fontWeight: 800, letterSpacing: '-1.2px' }}>BluePrint</h3>
-            <p style={{ color: 'var(--text-muted)', marginTop: '0.8rem', fontSize: '1.1rem', letterSpacing: '-0.01em' }}>Premium Career Architecture for top creative teams.</p>
+      {/* 6. The Final Call */}
+      <section ref={finalCallRef} style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+        <motion.div style={{ position: 'absolute', inset: 0, background: '#000', opacity: finalBgOpacity, zIndex: -1 }} />
+        <div style={{ textAlign: 'center', zIndex: 10 }}>
+          <motion.h2 style={{ fontSize: '5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', marginBottom: '2.5rem', opacity: finalBgOpacity }}>Ready to <span className="font-serif">Blueprint?</span></motion.h2>
+          <motion.div style={{ scale: ctaScale }}>
+            <Link to="/register" className="btn-primary" style={{ padding: '20px 50px', fontSize: '1.4rem', background: '#fff', color: '#000', border: 'none' }}>Create Your Roadmap</Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 7. Footer */}
+      <footer style={{ background: '#FFFFFF', borderTop: '1px solid rgba(0,0,0,0.05)', padding: '6rem 2rem 4rem', position: 'relative', zIndex: 10 }}>
+        <div className="container" style={{ padding: '0' }}>
+          <div className="footer-grid">
+            <div className="footer-col">
+              <h3 style={{ fontSize: '2rem', fontWeight: 800, letterSpacing: '-1.5px', marginBottom: '1.2rem' }}>BluePrint</h3>
+              <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', lineHeight: 1.6, marginBottom: '2rem' }}>AI-native career architecture for the next billion engineers.</p>
+              <h4>Join the newsletter</h4>
+              <form className="newsletter-form" onSubmit={handleSubscribe}>
+                <input type="email" placeholder="name@email.com" className="newsletter-input" value={email} onChange={(e) => setEmail(e.target.value)} required />
+                <button type="submit" className="btn-primary" style={{ padding: '12px', borderRadius: '50%', width: '45px', height: '45px' }}><Send size={18} /></button>
+              </form>
+            </div>
+            <div className="footer-col">
+              <h4>Product</h4>
+              <ul><li><Link to="/analyze">AI Analyzer</Link></li><li><Link to="/analyze">Dynamic Roadmaps</Link></li><li><Link to="/history">Analysis History</Link></li></ul>
+            </div>
+            <div className="footer-col">
+              <h4>Resources</h4>
+              <ul><li><a href="#">Documentation</a></li><li><a href="#">PDF Export</a></li></ul>
+            </div>
+            <div className="footer-col">
+              <h4>Company</h4>
+              <ul><li><a href="#">About Us</a></li><li><a href="#">Privacy Policy</a></li></ul>
+            </div>
           </div>
-          <div style={{ display: 'flex', gap: '3rem' }}>
-            <a href="#" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 600 }}>Privacy</a>
-            <a href="#" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 600 }}>Terms</a>
-            <a href="#github" style={{ color: 'var(--text-main)', textDecoration: 'none', fontWeight: 600 }}>GitHub</a>
+          <div style={{ marginTop: '5rem', paddingTop: '2rem', borderTop: '1px solid rgba(0,0,0,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>&copy; 2026 BluePrint Career Architecture.</p>
+            <div style={{ display: 'flex', gap: '2rem' }}><Globe size={18} color="var(--text-muted)" /><span style={{ color: 'var(--text-muted)', fontSize: '0.9rem', fontWeight: 600 }}>Region: Global (EN)</span></div>
           </div>
         </div>
       </footer>
-
     </div>
   );
 };

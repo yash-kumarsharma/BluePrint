@@ -241,3 +241,108 @@ body {
   50% { top: 100%; }
   100% { top: 0%; }
 }
+
+/* ========================================= */
+/* LOGO MARQUEE & ENTERPRISE FOOTER          */
+/* ========================================= */
+
+.logo-marquee-container {
+  overflow: hidden;
+  padding: 6rem 0;
+  background: transparent;
+  white-space: nowrap;
+  position: relative;
+  z-index: 10;
+}
+
+.logo-marquee {
+  display: inline-block;
+  animation: marquee 30s linear infinite;
+}
+
+.logo-item {
+  display: inline-block;
+  margin: 0 4rem;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #000;
+  opacity: 0.15;
+  letter-spacing: -1px;
+}
+
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 4rem;
+}
+
+.footer-col h4 {
+  font-size: 0.85rem;
+  font-weight: 800;
+  margin-bottom: 2rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: #000;
+}
+
+.footer-col ul {
+  list-style: none;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.8rem;
+}
+
+.footer-col ul li a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.footer-col ul li a:hover {
+  color: #000;
+  padding-left: 4px;
+}
+
+/* Newsletter Input */
+.newsletter-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.1);
+  background: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.3s;
+}
+
+.newsletter-input:focus {
+  border-color: #000;
+}
+
+@media (max-width: 968px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+}
