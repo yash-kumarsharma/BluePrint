@@ -26,6 +26,13 @@ const analysisSchema = new mongoose.Schema({
       duration: String
     }
   ],
+  learningResources: [
+    {
+      title: String,
+      platform: String,
+      url: String
+    }
+  ],
   createdAt: {
     type: Date,
     default: Date.now,

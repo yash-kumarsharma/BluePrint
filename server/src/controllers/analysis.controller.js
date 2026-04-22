@@ -41,15 +41,21 @@ Analyze them and return a strict JSON object with this exact structure (do not i
   "missingSkills": ["Node.js", "Docker"],
   "recommendations": ["Learn backend patterns", "Practice containerization"],
   "resumeImprovements": [
-    "Use stronger action verbs (e.g. 'Implemented' instead of 'Did')",
-    "Add measurable metrics to your work experience",
-    "Format your projects section more concisely"
+    "Use simple action words like 'Lead' or 'Created'",
+    "Add numbers to show your results (e.g., 'Helped 10 customers')",
+    "Keep your project descriptions short and clear"
   ],
   "roadmap": [
     { "step": 1, "task": "Learn Node.js Basics", "duration": "1 week" },
     { "step": 2, "task": "Build basic CRUD app", "duration": "2 weeks" }
+  ],
+  "learningResources": [
+    { "title": "Node.js Tutorial for Beginners", "platform": "YouTube", "url": "https://youtube.com/results?search_query=node+js+tutorial" },
+    { "title": "Data Structures & Algorithms", "platform": "GeeksforGeeks", "url": "https://www.geeksforgeeks.org/data-structures/" }
   ]
 }
+
+Note: Keep all feedback simple, direct, and easy for everyone to understand. Avoid heavy corporate jargon. Provide 2-3 specific learning resources based on the missing skills.
 
 Candidate Resume TEXT:
 """
@@ -126,6 +132,7 @@ ${jobDescription}
       recommendations: analysisData.recommendations,
       resumeImprovements: analysisData.resumeImprovements || [],
       roadmap: analysisData.roadmap,
+      learningResources: analysisData.learningResources || [],
     });
 
     // Return the finalized data

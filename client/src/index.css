@@ -334,6 +334,23 @@ body {
   border-color: #000;
 }
 
+/* Custom Thin Scrollbar for Analysis Studio */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.02);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.1);
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0,0,0,0.2);
+}
+
 @media (max-width: 968px) {
   .footer-grid {
     grid-template-columns: 1fr 1fr;
