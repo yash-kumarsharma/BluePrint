@@ -9,19 +9,10 @@ export default defineConfig({
       output: {
         // Manual chunk splitting to eliminate the 500kB warning and optimize load times
         manualChunks(id) {
-          // Group 3D graphics libraries (Three.js, R3F, Drei)
-          if (id.includes('three') || id.includes('@react-three')) {
-            return 'vendor-3d';
+          // Group heavy libraries (Three, Recharts, Framer) to optimize build and reduce JS bloat
+          if (id.includes('three') || id.includes('recharts') || id.includes('framer-motion')) {
+            return 'vendor-visuals';
           }
-          // Group Data Visualization (Recharts)
-          if (id.includes('recharts') || id.includes('d3')) {
-            return 'vendor-charts';
-          }
-          // Group Motion & Animation (Framer Motion)
-          if (id.includes('framer-motion')) {
-            return 'vendor-motion';
-          }
-          // Group other heavy node_modules (Axios, Lucide, etc.)
           if (id.includes('node_modules')) {
             return 'vendor-core';
           }
