@@ -69,7 +69,7 @@ ${jobDescription}
     `;
 
     // 4. Robust AI Analysis with Fallback Logic
-    const models = ['gemini-2.5-flash', 'gemini-3-flash'];
+    const models = ['gemini-2.5-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash-lite'];
     let response = null;
     let fallbackUsed = false;
 
