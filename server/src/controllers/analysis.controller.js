@@ -68,8 +68,8 @@ ${jobDescription}
 """
     `;
 
-    // 4. Robust AI Analysis with 4-Tier Fallback Logic (1.5 Flash, 1.5 Pro, 2.0-Flash, 1.5-8B)
-    const models = ['gemini-1.5-flash', 'gemini-1.5-pro', 'gemini-2.0-flash-exp', 'gemini-1.5-flash-8b'];
+    // 4. Robust AI Analysis with Fallback Logic
+    const models = ['gemini-2.5-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash-lite'];
     let response = null;
     let fallbackUsed = false;
 
