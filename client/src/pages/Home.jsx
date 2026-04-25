@@ -177,6 +177,7 @@ const Home = () => {
 
       <motion.div 
         initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1 }}
+        className="workbench-card"
         style={{ background: '#fff', borderRadius: '40px', border: '1px solid rgba(0,0,0,0.06)', padding: '4rem', maxWidth: '1000px', margin: '0 auto 6rem', boxShadow: '0 40px 100px -20px rgba(0,0,0,0.04)', position: 'relative', overflow: 'hidden' }}
       >
         <AnimatePresence>
@@ -206,24 +207,24 @@ const Home = () => {
       <AnimatePresence>
         {result && (
           <motion.div id="blueprint-results" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
-            <div ref={scrollIntoViewRef} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem' }}>
+            <div ref={scrollIntoViewRef} className="results-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem' }}>
               <div><h2 className="font-serif" style={{ fontSize: '3.5rem', fontWeight: 800 }}>Analysis Matrix.</h2></div>
               <button onClick={handleDownloadPdf} className="btn-secondary" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><Download size={20} /> Export Matrix</button>
             </div>
 
             <div className="bento-grid">
-              <div className="bento-item bento-wide" style={{ display: 'flex', background: '#fff', padding: '0' }}>
+              <div className="bento-item bento-wide metrics-tile" style={{ display: 'flex', background: '#fff', padding: '0' }}>
                  <div style={{ flex: 1, padding: '3rem', borderRight: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
-                    <div style={{ fontSize: '5rem', fontWeight: 800 }}>{result.matchPercentage}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>JD MATCHED</div>
+                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.matchPercentage}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>JD MATCHED</div>
                  </div>
                  <div style={{ flex: 1, padding: '3rem', textAlign: 'center' }}>
-                    <div style={{ fontSize: '5rem', fontWeight: 800 }}>{result.atsScore}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>ATS SCORE</div>
+                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.atsScore}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>ATS SCORE</div>
                  </div>
               </div>
 
-              <div className="bento-item bento-tall custom-scrollbar" style={{ background: '#fff', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
+              <div className="bento-item bento-tall custom-scrollbar radar-tile" style={{ background: '#fff', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
                 <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '2rem' }}><Target size={24} /> Radar Diagnostic</h3>
-                <div style={{ flex: 1, minHeight: '350px', minWidth: '400px' }}>
+                <div className="radar-container" style={{ flex: 1, minHeight: '350px', minWidth: '400px' }}>
                   <ResponsiveContainer width="100%" height="100%"><RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}><PolarGrid stroke="rgba(0,0,0,0.05)" /><PolarAngleAxis dataKey="skill" tick={{ fill: '#666', fontSize: 10, fontWeight: 600 }} /><Radar name="Skills" dataKey="value" stroke="#000" fill="#000" fillOpacity={0.1} /></RadarChart></ResponsiveContainer>
                 </div>
               </div>
@@ -243,7 +244,7 @@ const Home = () => {
               <div className="bento-item bento-wide" style={{ background: '#fff', border: '1px solid #000', maxHeight: '600px', display: 'flex', flexDirection: 'column' }}>
                  <h3 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Execution Roadmap.</h3>
                  <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto' }}>
-                    {result.roadmap.map((step, i) => <div key={i} style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '2rem', marginBottom: '2rem' }}><div style={{ fontSize: '2rem', fontWeight: 800, opacity: 0.1 }}>0{i+1}</div><div><div style={{ display: 'flex', justifyContent: 'space-between' }}><h4>{step.task}</h4><span style={{ background: '#000', color: '#fff', padding: '4px 12px', borderRadius: '99px' }}>{step.duration}</span></div><p style={{ color: 'var(--text-muted)' }}>{result.recommendations[i] || 'Skill gap bridge phase.'}</p></div></div>)}
+                    {result.roadmap.map((step, i) => <div key={i} className="roadmap-step" style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '2rem', marginBottom: '2rem' }}><div style={{ fontSize: '2rem', fontWeight: 800, opacity: 0.1 }}>0{i+1}</div><div><div style={{ display: 'flex', justifyContent: 'space-between' }}><h4>{step.task}</h4><span style={{ background: '#000', color: '#fff', padding: '4px 12px', borderRadius: '99px' }}>{step.duration}</span></div><p style={{ color: 'var(--text-muted)' }}>{result.recommendations[i] || 'Skill gap bridge phase.'}</p></div></div>)}
                  </div>
               </div>
 
