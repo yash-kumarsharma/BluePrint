@@ -66,8 +66,8 @@ const Login = () => {
           <div style={{ display: 'inline-flex', padding: '12px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', marginBottom: '1.5rem' }}>
             <Shield size={28} />
           </div>
-          <h2 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#000', marginBottom: '0.5rem' }}>Studio Portal</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Enter your credentials to access the workbench.</p>
+          <h2 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#000', marginBottom: '0.5rem' }}>Welcome Back</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Sign in to continue building your career.</p>
         </motion.div>
         
         {error && (
@@ -111,14 +111,14 @@ const Login = () => {
             style={{ width: '100%', marginTop: '1rem', padding: '16px', borderRadius: '14px', fontSize: '1.1rem', gap: '10px' }} 
             disabled={loading}
           >
-            {loading ? 'Authenticating...' : (
-              <>Access Workbench <ArrowRight size={20} /></>
+            {loading ? 'Signing in...' : (
+              <>Sign In <ArrowRight size={20} /></>
             )}
           </motion.button>
         </form>
 
         <motion.p variants={itemVariants} style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-          New Architect? <Link to="/register" style={{ color: '#000', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid #000' }}>Register credentials</Link>
+          New here? <Link to="/register" style={{ color: '#000', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid #000' }}>Create an account</Link>
         </motion.p>
       </motion.div>
     </div>

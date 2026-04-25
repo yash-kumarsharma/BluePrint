@@ -67,8 +67,8 @@ const Register = () => {
           <div style={{ display: 'inline-flex', padding: '12px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', marginBottom: '1.5rem' }}>
             <ShieldCheck size={28} />
           </div>
-          <h2 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#000', marginBottom: '0.5rem' }}>Architect Node</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Initialize your professional blueprint profile.</p>
+          <h2 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#000', marginBottom: '0.5rem' }}>Create Account</h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Start your journey to your dream job.</p>
         </motion.div>
         
         {error && (
@@ -126,14 +126,14 @@ const Register = () => {
             style={{ width: '100%', marginTop: '1rem', padding: '16px', borderRadius: '14px', fontSize: '1.1rem', gap: '10px' }} 
             disabled={loading}
           >
-            {loading ? 'Initializing...' : (
-              <>Create Node <ArrowRight size={20} /></>
+            {loading ? 'Creating account...' : (
+              <>Get Started <ArrowRight size={20} /></>
             )}
           </motion.button>
         </form>
 
         <motion.p variants={itemVariants} style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-          Already mapped? <Link to="/login" style={{ color: '#000', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid #000' }}>Access Portal</Link>
+          Already have an account? <Link to="/login" style={{ color: '#000', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid #000' }}>Sign in</Link>
         </motion.p>
       </motion.div>
     </div>

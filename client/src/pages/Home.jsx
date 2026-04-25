@@ -105,7 +105,7 @@ const Home = () => {
       setLoading(true);
       setError(null);
       
-      const texts = ['Ingesting Vectors...', 'Decoding Skill Gaps...', 'Architecting Roadmap...', 'Verifying Match Parity...'];
+      const texts = ['Reading Resume...', 'Finding Skill Gaps...', 'Creating Roadmap...', 'Finalizing Analysis...'];
       let ptr = 0;
       const loaderInterval = setInterval(() => {
         ptr = (ptr + 1) % texts.length;
@@ -170,8 +170,8 @@ const Home = () => {
       <header style={{ textAlign: 'center', margin: '4rem 0 6rem' }}>
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
           <span style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '2px', display: 'block', marginBottom: '1rem' }}>Blueprint Studio</span>
-          <h1 className="font-serif" style={{ fontSize: '4.5rem', fontWeight: 800, color: '#000', lineHeight: 1.1 }}>Analysis Workbench.</h1>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginTop: '1rem' }}>Map your professional growth against target industry vectors.</p>
+          <h1 className="font-serif" style={{ fontSize: '4.5rem', fontWeight: 800, color: '#000', lineHeight: 1.1 }}>Career Analysis.</h1>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', marginTop: '1rem' }}>See how you match up against any job in the market.</p>
         </motion.div>
       </header>
 
@@ -199,7 +199,7 @@ const Home = () => {
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <textarea className="input-field" placeholder="Paste the Job Description here..." value={jobDescription} onChange={(e) => setJobDescription(e.target.value)} style={{ flex: 1, borderRadius: '16px', background: 'rgba(0,0,0,0.02)', padding: '1.5rem', resize: 'none' }} />
-            <button type="submit" className="btn-primary" style={{ marginTop: '2rem', width: '100%', height: '64px', borderRadius: '16px' }}>Execute Analysis <ArrowRight /></button>
+            <button type="submit" className="btn-primary" style={{ marginTop: '2rem', width: '100%', height: '64px', borderRadius: '16px' }}>Analyze My Skills <ArrowRight /></button>
           </div>
         </form>
       </motion.div>
@@ -208,22 +208,22 @@ const Home = () => {
         {result && (
           <motion.div id="blueprint-results" initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1 }}>
             <div ref={scrollIntoViewRef} className="results-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '4rem' }}>
-              <div><h2 className="font-serif" style={{ fontSize: '3.5rem', fontWeight: 800 }}>Analysis Matrix.</h2></div>
-              <button onClick={handleDownloadPdf} className="btn-secondary" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><Download size={20} /> Export Matrix</button>
+              <div><h2 className="font-serif" style={{ fontSize: '3.5rem', fontWeight: 800 }}>Your Results.</h2></div>
+              <button onClick={handleDownloadPdf} className="btn-secondary" style={{ display: 'flex', gap: '8px', alignItems: 'center' }}><Download size={20} /> Save as PDF</button>
             </div>
 
             <div className="bento-grid">
               <div className="bento-item bento-wide metrics-tile" style={{ display: 'flex', background: '#fff', padding: '0' }}>
                  <div style={{ flex: 1, padding: '3rem', borderRight: '1px solid rgba(0,0,0,0.05)', textAlign: 'center' }}>
-                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.matchPercentage}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>JD MATCHED</div>
+                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.matchPercentage}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>SKILL MATCH</div>
                  </div>
                  <div style={{ flex: 1, padding: '3rem', textAlign: 'center' }}>
-                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.atsScore}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>ATS SCORE</div>
+                    <div className="metric-value" style={{ fontSize: '5rem', fontWeight: 800 }}>{result.atsScore}%</div><div style={{ fontWeight: 800, fontSize: '0.8rem', color: 'var(--text-muted)' }}>RESUME SCORE</div>
                  </div>
               </div>
 
               <div className="bento-item bento-tall custom-scrollbar radar-tile" style={{ background: '#fff', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '2rem' }}><Target size={24} /> Radar Diagnostic</h3>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '2rem' }}><Target size={24} /> Skill Graph</h3>
                 <div className="radar-container" style={{ flex: 1, minHeight: '350px', minWidth: '400px' }}>
                   <ResponsiveContainer width="100%" height="100%"><RadarChart cx="50%" cy="50%" outerRadius="65%" data={radarData}><PolarGrid stroke="rgba(0,0,0,0.05)" /><PolarAngleAxis dataKey="skill" tick={{ fill: '#666', fontSize: 10, fontWeight: 600 }} /><Radar name="Skills" dataKey="value" stroke="#000" fill="#000" fillOpacity={0.1} /></RadarChart></ResponsiveContainer>
                 </div>
@@ -237,12 +237,12 @@ const Home = () => {
               </div>
 
               <div className="bento-item custom-scrollbar" style={{ background: '#000', color: '#fff', maxHeight: '400px', overflowY: 'auto' }}>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1.5rem' }}><FileCheck size={24} /> System Corrections</h3>
+                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, marginBottom: '1.5rem' }}><FileCheck size={24} /> Resume Tips</h3>
                 {result.resumeImprovements?.map((imp, i) => <div key={i} style={{ display: 'flex', gap: '14px', marginBottom: '1rem' }}><div style={{ minWidth: '24px', height: '24px', background: 'rgba(255,255,255,0.1)', borderRadius: '6px', textAlign: 'center' }}>0{i+1}</div><p style={{ opacity: 0.85 }}>{imp}</p></div>)}
               </div>
 
               <div className="bento-item bento-wide" style={{ background: '#fff', border: '1px solid #000', maxHeight: '600px', display: 'flex', flexDirection: 'column' }}>
-                 <h3 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Execution Roadmap.</h3>
+                 <h3 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Your Growth Plan.</h3>
                  <div className="custom-scrollbar" style={{ flex: 1, overflowY: 'auto' }}>
                     {result.roadmap.map((step, i) => <div key={i} className="roadmap-step" style={{ display: 'grid', gridTemplateColumns: '80px 1fr', gap: '2rem', marginBottom: '2rem' }}><div style={{ fontSize: '2rem', fontWeight: 800, opacity: 0.1 }}>0{i+1}</div><div><div style={{ display: 'flex', justifyContent: 'space-between' }}><h4>{step.task}</h4><span style={{ background: '#000', color: '#fff', padding: '4px 12px', borderRadius: '99px' }}>{step.duration}</span></div><p style={{ color: 'var(--text-muted)' }}>{result.recommendations[i] || 'Skill gap bridge phase.'}</p></div></div>)}
                  </div>
