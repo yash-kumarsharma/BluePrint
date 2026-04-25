@@ -61,10 +61,21 @@ const SpiralGalaxy = () => {
 
 export default function GalaxyBackground() {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }}>
-      <Canvas camera={{ position: [0, 8, 2], fov: 60 }}>
-        {/* Allows user to drag the galaxy, but disables annoying scroll breaking */}
-        <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3} />
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'auto' }}>
+      <Canvas 
+        camera={{ position: [0, 8, 2], fov: 60 }}
+        style={{ touchAction: 'pan-y' }} // Allows vertical scroll while keeping horizontal interaction
+        gl={{ antialias: false }}
+        onCreated={(state) => state.gl.setClearColor('#FDFCFB', 0)}
+      >
+        <OrbitControls 
+          enableZoom={false} 
+          enablePan={false} 
+          autoRotate 
+          autoRotateSpeed={0.2} 
+          maxPolarAngle={Math.PI / 1.8} 
+          minPolarAngle={Math.PI / 3} 
+        />
         <ambientLight intensity={1} />
         <SpiralGalaxy />
         <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />

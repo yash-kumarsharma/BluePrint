@@ -1,11 +1,8 @@
 // Centralized API Configuration
-// Switch between local and production URLs here
+// Vite uses import.meta.env to access environment variables
+// Set VITE_API_BASE_URL in your Vercel/Local .env files
 
-const IS_PRODUCTION = false; // Set to true when deploying
-
-export const API_BASE_URL = IS_PRODUCTION 
-  ? 'https://blueprint-no08.onrender.com' 
-  : 'http://localhost:5000';
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 export const API_ENDPOINTS = {
   AUTH: `${API_BASE_URL}/api/auth`,

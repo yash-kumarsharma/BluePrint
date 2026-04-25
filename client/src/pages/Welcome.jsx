@@ -87,7 +87,7 @@ const Welcome = () => {
       
       {/* 1. Hero Section - Refined for Viva */}
       <section ref={heroRef} style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem', position: 'relative', zIndex: 10, overflow: 'hidden' }}>
-        <motion.div style={{ position: 'absolute', inset: 0, opacity: galaxyOpacity, pointerEvents: 'none' }}><GalaxyBackground /></motion.div>
+        <motion.div style={{ position: 'absolute', inset: 0, opacity: galaxyOpacity, pointerEvents: 'auto' }}><GalaxyBackground /></motion.div>
         <motion.h1 
           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           style={{ fontSize: '6rem', fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1, marginBottom: '2rem', color: '#000' }}
