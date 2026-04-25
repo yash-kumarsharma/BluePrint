@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, BrainCircuit, Target, Code, ShieldCheck, Zap, Globe, Cpu, BarChart3, Layers, Send, FileSearch, Database, Route, Network, Upload, ArrowUpRight, GraduationCap, Map, Activity } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef, useState } from 'react';
@@ -27,6 +27,7 @@ const WorkflowCard = ({ number, title, description, image }) => {
     <motion.div 
       variants={cardItem}
       whileHover={{ y: -10 }}
+      className="workflow-card"
       style={{ 
         background: '#fff',
         borderRadius: '32px',
@@ -55,7 +56,7 @@ const WorkflowCard = ({ number, title, description, image }) => {
         <h3 className="font-serif" style={{ fontSize: '2.4rem', fontWeight: 800, color: '#000', marginBottom: '0.8rem', lineHeight: 1.1 }}>{title}</h3>
         <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.4, maxWidth: '240px' }}>{description}</p>
       </div>
-      <div style={{ position: 'absolute', bottom: '-40px', right: '-20px', width: '200px', opacity: 0.8 }}>
+      <div className="workflow-card-img" style={{ position: 'absolute', bottom: '-40px', right: '-20px', width: '200px', opacity: 0.8 }}>
           <img src={image} alt={title} style={{ width: '100%', borderRadius: '24px' }} />
       </div>
     </motion.div>
@@ -63,6 +64,7 @@ const WorkflowCard = ({ number, title, description, image }) => {
 };
 
 const Welcome = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const heroRef = useRef(null);
   const finalCallRef = useRef(null);
@@ -85,7 +87,7 @@ const Welcome = () => {
       
       {/* 1. Hero Section - Refined for Viva */}
       <section ref={heroRef} style={{ height: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 2rem', position: 'relative', zIndex: 10, overflow: 'hidden' }}>
-        <motion.div style={{ position: 'absolute', inset: 0, opacity: galaxyOpacity }}><GalaxyBackground /></motion.div>
+        <motion.div style={{ position: 'absolute', inset: 0, opacity: galaxyOpacity, pointerEvents: 'none' }}><GalaxyBackground /></motion.div>
         <motion.h1 
           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           style={{ fontSize: '6rem', fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1, marginBottom: '2rem', color: '#000' }}
@@ -95,8 +97,14 @@ const Welcome = () => {
         <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 1 }} style={{ fontSize: '1.4rem', color: 'var(--text-muted)', maxWidth: '750px', marginBottom: '3.5rem', fontWeight: 500, letterSpacing: '-0.01em', lineHeight: 1.5 }}>
           AI-powered profile analysis, skill-gap detection, and personalized learning roadmaps to help you bridge the gap between your resume and your dream role.
         </motion.p>
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} style={{ display: 'flex', gap: '1.5rem' }}>
-          <Link to="/analyze" className="btn-primary" style={{ padding: '20px 44px', fontSize: '1.3rem', textDecoration: 'none' }}>Initiate Scan <ArrowRight size={22} /></Link>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} style={{ display: 'flex', gap: '1.5rem', position: 'relative', zIndex: 50 }}>
+          <button 
+            onClick={() => navigate('/analyze')} 
+            className="btn-primary" 
+            style={{ padding: '20px 44px', fontSize: '1.3rem', border: 'none', cursor: 'pointer' }}
+          >
+            Initiate Scan <ArrowRight size={22} />
+          </button>
           <a href="#workflow" className="btn-secondary" style={{ padding: '18px 44px', fontSize: '1.3rem', textDecoration: 'none', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', borderRadius: '999px' }}>Explore Process</a>
         </motion.div>
       </section>
@@ -135,7 +143,7 @@ const Welcome = () => {
       </section>
 
       {/* 4. Interactive Sphere - Tightened Spacing */}
-      <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false, amount: 0.3 }} className="container" style={{ textAlign: 'center', margin: '4rem auto 6rem' }}>
+      <motion.section initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: false, amount: 0.3 }} className="container" style={{ textAlign: 'center', margin: '4rem auto 0' }}>
         <h2 style={{ fontSize: '4.5rem', fontWeight: 800, letterSpacing: '-0.05em', color: '#000', marginBottom: '1.2rem' }}>The Market <span className="font-serif">Pulse.</span></h2>
         <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem', maxWidth: '700px', margin: '0 auto 2.5rem' }}>Experience the real-time skill ecosystem through our physically reactive data sphere.</p>
         <InteractiveGlobe />
@@ -143,7 +151,7 @@ const Welcome = () => {
 
       {/* 5. Key Features Ecosystem */}
       <motion.section className="container" style={{ padding: '3rem 2rem 8rem', position: 'relative', zIndex: 10 }}>
-        <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: false }} transition={{ duration: 1, ease: "circOut" }} style={{ height: '1px', background: 'rgba(0,0,0,0.1)', marginBottom: '4rem', transformOrigin: 'center' }} />
+        <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: false }} transition={{ duration: 1, ease: "circOut" }} style={{ height: '1px', background: 'rgba(0,0,0,0.1)', marginBottom: '2.5rem', transformOrigin: 'center' }} />
         <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
           <h2 style={{ fontSize: '4rem', marginBottom: '1rem', fontWeight: 800, letterSpacing: '-0.05em' }}>Core <span className="font-serif">Capabilities.</span></h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.3rem' }}>BluePrint is built with next-gen career architecture logic.</p>
@@ -178,10 +186,10 @@ const Welcome = () => {
       </motion.section>
 
       {/* 6. The Final Call */}
-      <section ref={finalCallRef} style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+      <section ref={finalCallRef} className="final-cta-section" style={{ height: '80vh', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
         <motion.div style={{ position: 'absolute', inset: 0, background: '#000', opacity: finalBgOpacity, zIndex: -1 }} />
         <div style={{ textAlign: 'center', zIndex: 10 }}>
-          <motion.h2 style={{ fontSize: '5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', marginBottom: '2.5rem', opacity: finalBgOpacity }}>Ready to <span className="font-serif">Blueprint?</span></motion.h2>
+          <motion.h2 className="final-cta-title" style={{ fontSize: '5rem', fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', marginBottom: '2.5rem', opacity: finalBgOpacity }}>Ready to <span className="font-serif">Blueprint?</span></motion.h2>
           <motion.div style={{ scale: ctaScale }}>
             <Link to="/register" className="btn-primary" style={{ padding: '20px 50px', fontSize: '1.4rem', background: '#fff', color: '#000', border: 'none' }}>Create Your Roadmap</Link>
           </motion.div>

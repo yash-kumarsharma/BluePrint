@@ -61,7 +61,7 @@ const SpiralGalaxy = () => {
 
 export default function GalaxyBackground() {
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'auto' }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: -1, pointerEvents: 'none' }}>
       <Canvas camera={{ position: [0, 8, 2], fov: 60 }}>
         {/* Allows user to drag the galaxy, but disables annoying scroll breaking */}
         <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} maxPolarAngle={Math.PI / 1.8} minPolarAngle={Math.PI / 3} />

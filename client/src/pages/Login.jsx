@@ -49,6 +49,7 @@ const Login = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
+        className="auth-card"
         style={{ 
           width: '100%', 
           maxWidth: '440px', 

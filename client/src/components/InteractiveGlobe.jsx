@@ -63,7 +63,7 @@ const LiquidGlobe = () => {
 
 export default function InteractiveGlobe() {
   return (
-    <div style={{ height: '600px', width: '100%', position: 'relative', zIndex: 10, margin: '2rem 0', cursor: 'grab' }}>
+    <div className="globe-container" style={{ height: '480px', width: '100%', position: 'relative', zIndex: 10, margin: '0', cursor: 'grab' }}>
       <Canvas camera={{ position: [0, 0, 5] }}>
         <ambientLight intensity={1} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={2} />
