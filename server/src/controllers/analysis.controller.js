@@ -162,3 +162,46 @@ exports.getUserHistory = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch history' });
   }
 };
+
+// @desc    Get single analysis by ID
+// @route   GET /api/analysis/:id
+// @access  Private
+exports.getAnalysisById = async (req, res) => {
+  try {
+    const analysis = await Analysis.findById(req.params.id);
+    if (!analysis) {
+      return res.status(404).json({ success: false, message: 'Analysis not found' });
+    }
+
+    // Check ownership if user is logged in
+    if (analysis.user && analysis.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ success: false, message: 'Not authorized to view this analysis' });
+    }
+
+    res.status(200).json({ success: true, data: analysis });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch analysis details' });
+  }
+};
+
+// @desc    Delete analysis
+// @route   DELETE /api/analysis/:id
+// @access  Private
+exports.deleteAnalysis = async (req, res) => {
+  try {
+    const analysis = await Analysis.findById(req.params.id);
+    if (!analysis) {
+      return res.status(404).json({ success: false, message: 'Analysis not found' });
+    }
+
+    // Check ownership
+    if (analysis.user && analysis.user.toString() !== req.user._id.toString()) {
+      return res.status(401).json({ success: false, message: 'Not authorized to delete this analysis' });
+    }
+
+    await analysis.deleteOne();
+    res.status(200).json({ success: true, message: 'Analysis removed' });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to delete analysis' });
+  }
+};

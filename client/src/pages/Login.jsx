@@ -2,7 +2,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LogIn, ArrowRight, Shield } from 'lucide-react';
+import { Mail, Lock, Eye, AlertCircle, TrendingUp } from 'lucide-react';
 import { API_ENDPOINTS } from '../config';
 
 const Login = () => {
@@ -29,98 +29,174 @@ const Login = () => {
     }
   };
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.8, staggerChildren: 0.1, ease: [0.16, 1, 0.3, 1] }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 10 },
-    visible: { opacity: 1, y: 0 }
-  };
-
   return (
-    <div style={{ minHeight: '90vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative' }}>
-      <motion.div 
-        initial="hidden"
-        animate="visible"
-        variants={containerVariants}
-        className="auth-card"
-        style={{ 
-          width: '100%', 
-          maxWidth: '440px', 
-          background: '#fff', 
-          borderRadius: '32px', 
-          padding: '3.5rem',
-          border: '1px solid rgba(0,0,0,0.05)',
-          boxShadow: '0 25px 50px -12px rgba(0,0,0,0.05)',
-          position: 'relative',
-          zIndex: 10
-        }}
-      >
-        <motion.div variants={itemVariants} style={{ textAlign: 'center', marginBottom: '3rem' }}>
-          <div style={{ display: 'inline-flex', padding: '12px', background: 'rgba(0,0,0,0.03)', borderRadius: '16px', marginBottom: '1.5rem' }}>
-            <Shield size={28} />
-          </div>
-          <h2 className="font-serif" style={{ fontSize: '2.5rem', fontWeight: 800, color: '#000', marginBottom: '0.5rem' }}>Welcome Back</h2>
-          <p style={{ color: 'var(--text-muted)', fontSize: '1rem' }}>Sign in to continue building your career.</p>
-        </motion.div>
+    <div className="auth-page-wrapper">
+      <div className="auth-container">
         
-        {error && (
-          <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ color: '#ef4444', background: 'rgba(239, 68, 68, 0.05)', padding: '12px 16px', borderRadius: '12px', marginBottom: '1.5rem', fontSize: '0.9rem', border: '1px solid rgba(239, 68, 68, 0.1)' }}>
-            {error}
-          </motion.div>
-        )}
+        {/* Left Side: Auth Form */}
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }} className="auth-form-side">
+          <div className="auth-card">
+            <h2 style={{ fontSize: '2.8rem', fontWeight: 950, color: '#0F172A', marginBottom: '0.5rem', letterSpacing: '-0.04em', lineHeight: 1.1, fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              Master Your <br/> <span style={{ color: '#12B8C9' }}>Career</span>
+            </h2>
+            <p style={{ color: '#64748B', fontSize: '1rem', marginBottom: '2.5rem', lineHeight: 1.5, fontWeight: 500 }}>
+              Unlock your professional potential with AI-driven skill intelligence.
+            </p>
 
-        <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-          <motion.div variants={itemVariants}>
-            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: '#000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Email</label>
-            <input 
-              type="email" 
-              required 
-              className="input-field" 
-              placeholder="architect@blueprint.ai"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{ borderRadius: '12px', padding: '14px 18px', fontSize: '1rem', border: '1px solid rgba(0,0,0,0.1)' }}
-            />
-          </motion.div>
-
-          <motion.div variants={itemVariants}>
-            <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.85rem', fontWeight: 600, color: '#000', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Password</label>
-            <input 
-              type="password" 
-              required 
-              className="input-field" 
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{ borderRadius: '12px', padding: '14px 18px', fontSize: '1rem', border: '1px solid rgba(0,0,0,0.1)' }}
-            />
-          </motion.div>
-          
-          <motion.button 
-            variants={itemVariants}
-            whileTap={{ scale: 0.98 }}
-            type="submit" 
-            className="btn-primary" 
-            style={{ width: '100%', marginTop: '1rem', padding: '16px', borderRadius: '14px', fontSize: '1.1rem', gap: '10px' }} 
-            disabled={loading}
-          >
-            {loading ? 'Signing in...' : (
-              <>Sign In <ArrowRight size={20} /></>
+            {error && (
+              <div style={{ color: '#e53e3e', background: '#fff5f5', padding: '12px 16px', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.9rem', border: '1px solid #fed7d7' }}>
+                {error}
+              </div>
             )}
-          </motion.button>
-        </form>
 
-        <motion.p variants={itemVariants} style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.95rem', color: 'var(--text-muted)' }}>
-          New here? <Link to="/register" style={{ color: '#000', fontWeight: 700, textDecoration: 'none', borderBottom: '1.5px solid #000' }}>Create an account</Link>
-        </motion.p>
-      </motion.div>
+            <button className="oauth-btn" style={{ marginBottom: '12px' }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
+                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
+                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
+                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
+                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
+              </svg> Continue with Google
+            </button>
+            <button className="oauth-btn">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#3182CE">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg> Continue with LinkedIn
+            </button>
+
+            <div className="divider">OR USE EMAIL</div>
+
+            <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              <div className="auth-input-group">
+                <label>Email Address</label>
+                <div style={{ position: 'relative' }}>
+                  <Mail size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                  <input 
+                    type="email" 
+                    required 
+                    placeholder="alex@blueprint.ai"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    style={{ paddingLeft: '40px' }}
+                  />
+                </div>
+              </div>
+
+              <div className="auth-input-group">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <label style={{ margin: 0 }}>Password</label>
+                  <Link to="#" style={{ fontSize: '0.75rem', fontWeight: 700, color: '#38B2AC', textDecoration: 'none' }}>FORGOT?</Link>
+                </div>
+                <div style={{ position: 'relative', marginTop: '8px' }}>
+                  <Lock size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                  <input 
+                    type="password" 
+                    required 
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    style={{ paddingLeft: '40px' }}
+                  />
+                  <Eye size={18} color="#A0AEC0" style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} />
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '0.5rem' }}>
+                <input type="checkbox" id="remember" style={{ width: '16px', height: '16px', accentColor: '#38B2AC', cursor: 'pointer' }} />
+                <label htmlFor="remember" style={{ fontSize: '0.85rem', color: '#4A5568', cursor: 'pointer' }}>Keep me logged in</label>
+              </div>
+              
+              <button 
+                type="submit" 
+                disabled={loading}
+                style={{ width: '100%', marginTop: '0.5rem', padding: '16px', borderRadius: '12px', fontSize: '1rem', fontWeight: 700, background: '#38B2AC', color: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 4px 14px rgba(56, 178, 172, 0.4)' }} 
+              >
+                {loading ? 'Accessing...' : 'Access Dashboard'}
+              </button>
+            </form>
+
+            <p style={{ textAlign: 'center', marginTop: '2.5rem', fontSize: '0.9rem', color: '#718096' }}>
+              New to the platform? <Link to="/register" style={{ color: '#319795', fontWeight: 700, textDecoration: 'none' }}>Create account</Link>
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Right Side: Mockup */}
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8, delay: 0.2 }} className="auth-mockup-side">
+          <div className="iphone-mockup">
+            <div className="iphone-notch" />
+            
+            <div style={{ padding: '40px 20px 20px', height: '100%', display: 'flex', flexDirection: 'column' }}>
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '20px' }}>
+                <div style={{ background: '#38B2AC', padding: '6px', borderRadius: '8px', color: '#fff', display: 'flex' }}>
+                  <TrendingUp size={14} />
+                </div>
+                <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#1A202C' }}>BluePrint</span>
+              </div>
+
+              {/* Match Card */}
+              <div style={{ border: '1px solid #E2E8F0', borderRadius: '20px', padding: '20px', marginBottom: '20px' }}>
+                <div style={{ fontSize: '0.65rem', fontWeight: 800, color: '#A0AEC0', letterSpacing: '1px', marginBottom: '4px' }}>OVERALL MATCH</div>
+                <div style={{ fontSize: '2rem', fontWeight: 800, color: '#1A202C' }}>85%</div>
+                
+                <div style={{ marginTop: '20px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', fontWeight: 800, color: '#A0AEC0', marginBottom: '8px' }}>
+                    <span>SKILL GROWTH</span>
+                    <span style={{ color: '#38B2AC' }}>+12%</span>
+                  </div>
+                  <div style={{ height: '6px', background: '#EDF2F7', borderRadius: '3px', overflow: 'hidden' }}>
+                    <div style={{ width: '65%', height: '100%', background: '#48BB78' }} />
+                  </div>
+                </div>
+              </div>
+
+              {/* Skills List */}
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, color: '#A0AEC0', letterSpacing: '1px', marginBottom: '12px' }}>ANALYZED SKILLS</div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                {[
+                  { name: 'React Framework', status: 'STRONG', color: '#48BB78' },
+                  { name: 'Node.js Backend', status: 'MODERATE', color: '#D69E2E' },
+                  { name: 'GraphQL API', status: 'GAP', color: '#E53E3E' },
+                  { name: 'Kubernetes', status: 'STRONG', color: '#48BB78' }
+                ].map((skill, i) => (
+                  <div key={i} style={{ border: `1px solid ${skill.color}30`, background: '#fff', padding: '12px', borderRadius: '12px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', boxShadow: '0 2px 5px rgba(0,0,0,0.02)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: skill.color }} />
+                      <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#2D3748' }}>{skill.name}</span>
+                    </div>
+                    <span style={{ fontSize: '0.6rem', fontWeight: 800, color: '#A0AEC0' }}>{skill.status}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: 'auto', background: '#1A202C', color: '#fff', textAlign: 'center', padding: '16px', borderRadius: '16px', fontSize: '0.8rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '1px' }}>
+                Bridge Your Gap Now
+              </div>
+            </div>
+          </div>
+
+          {/* Floating Top Gap Card */}
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            style={{ position: 'absolute', bottom: '-20px', right: '-40px', background: '#fff', padding: '16px', borderRadius: '16px', boxShadow: '0 10px 25px rgba(0,0,0,0.1)', width: '220px', zIndex: 30, border: '1px solid rgba(0,0,0,0.05)' }}
+          >
+            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <div style={{ background: '#FFF5F5', color: '#E53E3E', padding: '6px', borderRadius: '8px' }}>
+                <AlertCircle size={16} />
+              </div>
+              <div>
+                <div style={{ fontSize: '0.6rem', fontWeight: 800, color: '#A0AEC0', letterSpacing: '1px' }}>TOP GAP</div>
+                <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#1A202C', marginBottom: '4px' }}>Cloud Security</div>
+                <div style={{ fontSize: '0.7rem', color: '#718096', lineHeight: 1.4 }}>Recommended: 5h course from Udemy.</div>
+              </div>
+            </div>
+          </motion.div>
+        </motion.div>
+
+      </div>
     </div>
   );
 };
