@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Navbar from './components/Navbar';
@@ -32,8 +32,10 @@ function App() {
   return (
     <Router>
       <motion.div className="cursor-glow" variants={cursorVariants} animate="default"></motion.div>
-      {/* Navbar sits above all routes automatically */}
-      <Navbar />
+      
+      {/* Conditionally render Navbar: Hide on Login/Register */}
+      <ConditionalNavbar />
+
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/analyze" element={<Home />} />
@@ -43,6 +45,15 @@ function App() {
       </Routes>
     </Router>
   );
+}
+
+// Helper component to handle location-based rendering
+function ConditionalNavbar() {
+  const location = useLocation();
+  const hideOn = ['/login', '/register'];
+  
+  if (hideOn.includes(location.pathname)) return null;
+  return <Navbar />;
 }
 
 export default App;

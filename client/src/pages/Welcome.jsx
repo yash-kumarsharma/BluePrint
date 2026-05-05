@@ -24,11 +24,11 @@ const cardItem = {
 // Workflow Card Component (Apple Style)
 const WorkflowCard = ({ number, title, description, image }) => {
   return (
-    <motion.div 
+    <motion.div
       variants={cardItem}
       whileHover={{ y: -10 }}
       className="workflow-card"
-      style={{ 
+      style={{
         background: '#fff',
         borderRadius: '32px',
         padding: '2.5rem',
@@ -46,7 +46,7 @@ const WorkflowCard = ({ number, title, description, image }) => {
       <div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
           <span style={{ fontWeight: 800, fontSize: '0.85rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px' }}>Step {number}</span>
-          <motion.div 
+          <motion.div
             whileHover={{ x: 5, y: -5 }}
             style={{ background: '#000', padding: '10px', borderRadius: '50%', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
           >
@@ -57,7 +57,7 @@ const WorkflowCard = ({ number, title, description, image }) => {
         <p style={{ color: 'var(--text-muted)', fontSize: '1rem', lineHeight: 1.4, maxWidth: '240px' }}>{description}</p>
       </div>
       <div className="workflow-card-img" style={{ position: 'absolute', bottom: '-40px', right: '-20px', width: '200px', opacity: 0.8 }}>
-          <img src={image} alt={title} style={{ width: '100%', borderRadius: '24px' }} />
+        <img src={image} alt={title} style={{ width: '100%', borderRadius: '24px' }} />
       </div>
     </motion.div>
   );
@@ -68,7 +68,7 @@ const Welcome = () => {
   const [email, setEmail] = useState('');
   const heroRef = useRef(null);
   const finalCallRef = useRef(null);
-  
+
   const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const { scrollYProgress: finalScroll } = useScroll({ target: finalCallRef, offset: ["start end", "center center", "end start"] });
 
@@ -84,14 +84,14 @@ const Welcome = () => {
 
   return (
     <div style={{ overflowX: 'hidden' }}>
-      
+
       {/* 1. SaaS Hero Section */}
-      <section id="home" ref={heroRef} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '6rem 2rem 4rem', position: 'relative', zIndex: 10, background: 'radial-gradient(ellipse at top, rgba(56, 178, 172, 0.15) 0%, transparent 60%)' }}>
+      <section id="home" ref={heroRef} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '10rem 2rem 4rem', position: 'relative', zIndex: 10, background: 'radial-gradient(ellipse at top, rgba(56, 178, 172, 0.15) 0%, transparent 60%)' }}>
         
-        {/* Badge */}
+        {/* Badge - Back above headline, but closer to it and further from navbar */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-          style={{ background: 'rgba(56, 178, 172, 0.15)', padding: '6px 16px', borderRadius: '999px', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2rem' }}
+          style={{ background: 'rgba(56, 178, 172, 0.15)', padding: '6px 16px', borderRadius: '999px', display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '1.2rem' }}
         >
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--color-cyan)' }} />
           <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#000', letterSpacing: '2px', textTransform: 'uppercase' }}>AI-Powered Skill Gap Analysis</span>
@@ -103,8 +103,8 @@ const Welcome = () => {
           className="responsive-title"
           style={{ fontSize: '7rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1.05, marginBottom: '2rem', color: '#0B0F19' }}
         >
-          AI-Driven Growth<br/>
-          To <span className="text-hollow">Boost Your</span><br/>
+          AI-Driven Growth<br />
+          To <span className="text-hollow">Boost Your</span><br />
           Career Path
         </motion.h1>
 
@@ -115,13 +115,13 @@ const Welcome = () => {
 
         {/* CTA Area */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} style={{ display: 'flex', gap: '1.5rem', position: 'relative', zIndex: 50, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <button 
-            onClick={() => navigate('/analyze')} 
+          <button
+            onClick={() => navigate('/analyze')}
             style={{ background: '#0B0F19', color: '#fff', padding: '18px 40px', fontSize: '1.2rem', borderRadius: '99px', border: 'none', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
           >
             Analyze My Skills <ArrowRight size={20} />
           </button>
-          
+
           <div className="mobile-hidden" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{ background: '#f3f4f6', padding: '12px 20px', borderRadius: '99px', fontSize: '0.9rem', fontWeight: 800, color: '#000' }}>
               Used by <span style={{ color: 'var(--color-cyan)' }}>Active Candidates</span>
@@ -132,16 +132,16 @@ const Welcome = () => {
 
       {/* 2. Metrics & Image Banner */}
       <section className="container" style={{ padding: '2rem 2rem 6rem', position: 'relative', zIndex: 10 }}>
-        
+
         {/* Large Image Banner */}
         <div style={{ position: 'relative', width: '100%', maxWidth: '1000px', margin: '0 auto 6rem' }}>
           <div className="responsive-container" style={{ background: '#0B0F19', width: '100%', minHeight: '250px', borderRadius: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', border: '8px solid #fff', boxShadow: '0 30px 60px rgba(0,0,0,0.08)', padding: '2rem' }}>
             <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-cyan)', letterSpacing: '2px', marginBottom: '1rem', textAlign: 'center' }}>DIAGNOSTIC VIEW</div>
             <div className="responsive-title" style={{ fontSize: '4rem', fontWeight: 800, textAlign: 'center' }}>Vector Mapping</div>
           </div>
-          
+
           {/* Floating Badge */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}
             style={{ position: 'absolute', right: '-20px', bottom: '-20px', background: '#fff', padding: '24px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', maxWidth: '280px', border: '1px solid rgba(0,0,0,0.05)' }}
           >
@@ -186,10 +186,10 @@ const Welcome = () => {
       {/* 3. Transformative Impact (Bento) */}
       <section id="features" className="container" style={{ padding: '6rem 2rem' }}>
         <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <h2 style={{ fontSize: '3.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '1rem' }}>Drive Transformative<br/>Impact with AI</h2>
+          <h2 style={{ fontSize: '3.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '1rem' }}>Drive Transformative<br />Impact with AI</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>We've built the tools that high-performance teams use to scale intelligence across their organization.</p>
         </div>
-        
+
         <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
           {/* Left Card */}
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ background: '#fff', borderRadius: '40px', padding: '3rem', position: 'relative', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>
@@ -221,8 +221,8 @@ const Welcome = () => {
       <section id="workflow" className="container responsive-container" style={{ padding: '6rem 2rem' }}>
         <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4rem', alignItems: 'center' }}>
           <div>
-            <h2 style={{ fontSize: '3.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '4rem', lineHeight: 1.1 }}>Effortless<br/>onboarding and<br/>rapid discovery<br/>steps</h2>
-            
+            <h2 style={{ fontSize: '3.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '4rem', lineHeight: 1.1 }}>Effortless<br />onboarding and<br />rapid discovery<br />steps</h2>
+
             <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
               {[
                 { num: '01', color: 'var(--color-green)', title: 'Input Data', desc: 'Upload your latest resume and the target Job Description to start the engine.' },
@@ -242,7 +242,7 @@ const Welcome = () => {
             </div>
           </div>
           <div style={{ background: '#f3f4f6', height: '700px', borderRadius: '40px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.5rem', fontWeight: 700 }}>
-             Portrait Image
+            Portrait Image
           </div>
         </div>
       </section>
@@ -253,7 +253,7 @@ const Welcome = () => {
           <h2 style={{ fontSize: '3rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '1rem' }}>Don't Take Our Word For It</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem' }}>Read their testimonials to gain insights into how we've made a positive impact.</p>
         </div>
-        
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           {[
             { color: 'var(--color-green)', name: 'Sarah Jenkins', role: 'SENIOR DEV', text: '"The JD Score feature is a game changer. It told me exactly why I was getting rejected and gave me the roadmap to fix it."', img: '1' },
@@ -262,7 +262,7 @@ const Welcome = () => {
           ].map((test, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} style={{ background: test.color, padding: '2.5rem', borderRadius: '32px', color: '#0B0F19', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <img src={`https://i.pravatar.cc/100?img=${parseInt(test.img)+20}`} alt={test.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
+                <img src={`https://i.pravatar.cc/100?img=${parseInt(test.img) + 20}`} alt={test.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>{test.name}</div>
                   <div style={{ fontSize: '0.7rem', fontWeight: 800, opacity: 0.6, letterSpacing: '1px' }}>{test.role}</div>
@@ -300,9 +300,9 @@ const Welcome = () => {
         <div style={{ background: 'linear-gradient(135deg, #050b14 0%, #0a1128 100%)', borderRadius: '48px', padding: '6rem 2rem', textAlign: 'center', color: '#fff', position: 'relative', overflow: 'hidden', boxShadow: '0 40px 80px rgba(0,0,0,0.1)' }}>
           {/* Subtle Glow */}
           <div style={{ position: 'absolute', top: '0', left: '50%', transform: 'translate(-50%, -50%)', width: '600px', height: '600px', background: 'radial-gradient(circle, rgba(103,232,249,0.15) 0%, transparent 70%)', pointerEvents: 'none' }} />
-          
+
           <h2 className="responsive-title" style={{ fontSize: '5.5rem', fontWeight: 800, letterSpacing: '-0.05em', lineHeight: 1.1, marginBottom: '2rem', position: 'relative', zIndex: 10 }}>
-            Ready to bridge<br/>the gap?
+            Ready to bridge<br />the gap?
           </h2>
           <p style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.7)', maxWidth: '600px', margin: '0 auto 4rem', lineHeight: 1.5, position: 'relative', zIndex: 10 }}>
             Start your journey towards mastery today. Join professionals using AI to outpace the market.
@@ -321,7 +321,7 @@ const Welcome = () => {
       {/* 7. Let's Make It Happen Footer */}
       <footer style={{ background: 'linear-gradient(to bottom, #000000 0%, #001a1a 100%)', color: '#fff', padding: '6rem 2rem 2rem', marginTop: '4rem', position: 'relative' }}>
         <div className="container" style={{ padding: 0 }}>
-          
+
           {/* Top Bar: Fake Search & Socials */}
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '99px', marginBottom: '6rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.7 }}>
@@ -341,7 +341,7 @@ const Welcome = () => {
             {/* Massive Heading */}
             <div>
               <h2 className="responsive-title" style={{ fontSize: '6rem', fontWeight: 800, lineHeight: 0.9, letterSpacing: '-0.05em', marginBottom: '3rem' }}>
-                BUILD YOUR<br/>FUTURE NOW
+                BUILD YOUR<br />FUTURE NOW
               </h2>
               <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
                 <Link to="/analyze" style={{ background: 'var(--color-cyan)', color: '#000', padding: '16px 32px', borderRadius: '99px', textDecoration: 'none', fontWeight: 800, display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -364,7 +364,7 @@ const Welcome = () => {
                   { label: 'FAQ', id: '#faq' }
                 ].map((link) => (
                   <li key={link.label} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '1.1rem' }}>
-                    <span style={{ color: 'var(--color-cyan)' }}>★</span> 
+                    <span style={{ color: 'var(--color-cyan)' }}>★</span>
                     <a href={link.id} style={{ color: '#fff', textDecoration: 'none', transition: 'opacity 0.2s' }} onMouseEnter={(e) => e.currentTarget.style.opacity = '0.7'} onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}>
                       {link.label}
                     </a>
@@ -396,8 +396,8 @@ const Welcome = () => {
                 <span style={{ color: 'var(--color-cyan)' }}>★</span> {new Date().toLocaleTimeString()}
               </div>
             </div>
-            <button 
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               style={{ background: 'var(--color-cyan)', color: '#000', border: 'none', width: '60px', height: '60px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
             >
               <ArrowUp size={24} />

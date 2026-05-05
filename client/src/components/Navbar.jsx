@@ -24,6 +24,25 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const handleLinkClick = (e, href) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      setIsOpen(false);
+      
+      // If we're not on the home page, go home first
+      if (location.pathname !== '/') {
+        navigate('/' + href);
+      } else {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }
+    } else {
+      setIsOpen(false);
+    }
+  };
+
   const navLinks = userInfo ? [
     { name: 'Dashboard', href: '/analyze' },
     { name: 'My Analyses', href: '/history' },
@@ -38,25 +57,26 @@ const Navbar = () => {
     <>
       <nav style={{
         position: 'fixed',
-        top: isMobile ? '0' : '20px',
+        top: '20px',
         left: '50%',
         transform: 'translateX(-50%)',
-        width: isMobile ? '100%' : 'max-content',
-        minWidth: isMobile ? '100%' : '1100px',
-        padding: '0.8rem 2.5rem',
+        width: isMobile ? '90%' : 'max-content',
+        minWidth: isMobile ? 'auto' : '1100px',
+        padding: '0.8rem 2rem',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        background: isMobile ? 'rgba(255, 255, 255, 0.9)' : 'rgba(255, 255, 255, 0.7)',
+        background: 'rgba(255, 255, 255, 0.75)',
         backdropFilter: 'blur(20px) saturate(180%)',
         WebkitBackdropFilter: 'blur(20px) saturate(180%)',
-        borderRadius: isMobile ? '0' : '999px',
-        border: isMobile ? 'none' : '1px solid rgba(0, 0, 0, 0.05)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
-        zIndex: 1000
+        borderRadius: '999px',
+        border: '1px solid rgba(0, 0, 0, 0.08)',
+        boxShadow: '0 12px 40px rgba(0, 0, 0, 0.12)',
+        zIndex: 1000,
+        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
-        <Link to="/" onClick={() => setIsOpen(false)} style={{ textDecoration: 'none', fontWeight: '900', fontSize: '1.4rem', color: '#0B0F19', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ background: 'var(--color-cyan)', color: '#fff', padding: '6px', borderRadius: '8px', display: 'flex' }}>
+        <Link to="/" onClick={() => setIsOpen(false)} style={{ textDecoration: 'none', fontWeight: '950', fontSize: '1.4rem', color: '#0B0F19', letterSpacing: '-0.8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ background: 'var(--color-cyan)', color: '#fff', padding: '6px', borderRadius: '10px', display: 'flex' }}>
             <Layers size={20} />
           </div>
           BluePrint
@@ -68,13 +88,15 @@ const Navbar = () => {
             {navLinks.map(link => (
               <Link 
                 key={link.name} 
-                to={link.href} 
+                to={link.href}
+                onClick={(e) => handleLinkClick(e, link.href)}
                 style={{ 
                   color: location.pathname === link.href ? '#38B2AC' : '#64748B', 
                   textDecoration: 'none', 
-                  fontWeight: 700, 
-                  fontSize: '0.95rem',
-                  transition: 'color 0.2s'
+                  fontWeight: 800, 
+                  fontSize: '0.9rem',
+                  transition: 'color 0.2s',
+                  letterSpacing: '0.2px'
                 }}
               >
                 {link.name}
@@ -100,14 +122,14 @@ const Navbar = () => {
                    <span style={{ fontWeight: 800, fontSize: '0.9rem', color: '#0B0F19' }}>{userInfo.name}</span>
                    <ChevronDown size={16} color="#64748B" />
                 </div>
-                <button onClick={handleLogout} style={{ background: '#0F172A', color: '#fff', border: 'none', padding: '8px 20px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer' }}>
+                <button onClick={handleLogout} style={{ background: '#0F172A', color: '#fff', border: 'none', padding: '10px 24px', borderRadius: '99px', fontSize: '0.85rem', fontWeight: 800, cursor: 'pointer' }}>
                    Logout
                 </button>
               </>
             ) : (
               <>
-                <Link to="/login" style={{ color: '#0B0F19', textDecoration: 'none', fontWeight: 700, fontSize: '0.95rem' }}>Log In</Link>
-                <Link to="/register" className="btn-primary" style={{ padding: '10px 24px', fontSize: '0.95rem', textDecoration: 'none', background: '#0B0F19', color: '#fff' }}>Get Started</Link>
+                <Link to="/login" style={{ color: '#0B0F19', textDecoration: 'none', fontWeight: 800, fontSize: '0.9rem' }}>Log In</Link>
+                <Link to="/register" className="btn-primary" style={{ padding: '12px 28px', fontSize: '0.9rem', textDecoration: 'none', background: '#0B0F19', color: '#fff', borderRadius: '99px', fontWeight: 800 }}>Get Started</Link>
               </>
             )
           )}
@@ -144,13 +166,13 @@ const Navbar = () => {
               <Link 
                 key={link.name} 
                 to={link.href} 
-                onClick={() => setIsOpen(false)}
-                style={{ fontSize: '2rem', fontWeight: 800, color: '#000', textDecoration: 'none', letterSpacing: '-0.04em' }}
+                onClick={(e) => handleLinkClick(e, link.href)}
+                style={{ fontSize: '2.5rem', fontWeight: 950, color: '#0F172A', textDecoration: 'none', letterSpacing: '-0.05em' }}
               >
                 {link.name}
               </Link>
             ))}
-            <div style={{ width: '40px', height: '2px', background: 'var(--color-cyan)', margin: '1rem 0' }} />
+            <div style={{ width: '40px', height: '4px', background: 'var(--color-cyan)', margin: '1.5rem 0', borderRadius: '2px' }} />
             {userInfo ? (
               <>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '2rem' }}>
@@ -159,14 +181,14 @@ const Navbar = () => {
                      alt="User" 
                      style={{ width: '50px', height: '50px', borderRadius: '50%' }}
                    />
-                   <div style={{ fontSize: '1.2rem', fontWeight: 800 }}>{userInfo.name}</div>
+                   <div style={{ fontSize: '1.4rem', fontWeight: 900 }}>{userInfo.name}</div>
                 </div>
-                <button onClick={handleLogout} style={{ background: 'none', border: 'none', fontSize: '1.5rem', fontWeight: 700, color: '#EF4444', cursor: 'pointer', textAlign: 'left', padding: 0 }}>Logout</button>
+                <button onClick={handleLogout} style={{ background: 'none', border: 'none', fontSize: '1.8rem', fontWeight: 800, color: '#EF4444', cursor: 'pointer', textAlign: 'left', padding: 0 }}>Logout</button>
               </>
             ) : (
               <>
-                <Link to="/login" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 700, color: '#000', textDecoration: 'none' }}>Log In</Link>
-                <Link to="/register" onClick={() => setIsOpen(false)} style={{ fontSize: '1.5rem', fontWeight: 700, color: '#38B2AC', textDecoration: 'none' }}>Join BluePrint</Link>
+                <Link to="/login" onClick={() => setIsOpen(false)} style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0F172A', textDecoration: 'none' }}>Log In</Link>
+                <Link to="/register" onClick={() => setIsOpen(false)} style={{ fontSize: '1.8rem', fontWeight: 800, color: '#38B2AC', textDecoration: 'none' }}>Join BluePrint</Link>
               </>
             )}
           </motion.div>
