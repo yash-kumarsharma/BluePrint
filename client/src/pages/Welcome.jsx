@@ -5,6 +5,12 @@ import { useRef, useState } from 'react';
 import GalaxyBackground from '../components/GalaxyBackground';
 import InteractiveGlobe from '../components/InteractiveGlobe';
 
+
+import onboardingPortraitImg from '../assets/onboarding_portrait.png';
+import avatarSarah from '../assets/avatar_sarah.png';
+import avatarMarcus from '../assets/avatar_marcus.png';
+import avatarLina from '../assets/avatar_lina.png';
+
 // Animation Variants
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -63,6 +69,174 @@ const WorkflowCard = ({ number, title, description, image }) => {
   );
 };
 
+// Micro-UI Component for Matched vs Missing Gaps
+const MatchedVsMissingUI = () => {
+  const matched = ['React & Redux', 'Node.js & Express', 'MongoDB', 'REST APIs'];
+  const missing = ['Docker Containerization', 'Kubernetes Clusters', 'GraphQL Integration'];
+
+  return (
+    <div style={{
+      display: 'grid',
+      gridTemplateColumns: '1fr 1fr',
+      gap: '0.8rem',
+      padding: '0.8rem',
+      background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
+      borderRadius: '20px',
+      border: '1px solid rgba(0,0,0,0.06)',
+      height: '100%',
+      overflow: 'hidden',
+      userSelect: 'none'
+    }}>
+      {/* Matched Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', justifyContent: 'center' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#10b981', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <CheckCircle2 size={11} /> Matched
+        </div>
+        {matched.map((skill, index) => (
+          <motion.div
+            key={skill}
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.08 }}
+            whileHover={{ scale: 1.02, x: 2 }}
+            style={{
+              background: '#fff',
+              border: '1px solid rgba(16, 185, 129, 0.15)',
+              borderRadius: '8px',
+              padding: '5px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              color: '#065f46',
+              boxShadow: '0 2px 4px rgba(16, 185, 129, 0.02)'
+            }}
+          >
+            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{skill}</span>
+            <span style={{ color: '#10b981', fontWeight: 900, fontSize: '0.7rem' }}>✓</span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Missing Column */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', justifyContent: 'center' }}>
+        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#ef4444', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          <Activity size={11} /> Missing Gaps
+        </div>
+        {missing.map((skill, index) => (
+          <motion.div
+            key={skill}
+            initial={{ opacity: 0, x: 10 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: index * 0.08 }}
+            whileHover={{ scale: 1.02, x: -2 }}
+            style={{
+              background: '#fff',
+              border: '1px dashed rgba(239, 68, 68, 0.25)',
+              borderRadius: '8px',
+              padding: '5px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              fontSize: '0.75rem',
+              fontWeight: 700,
+              color: '#991b1b',
+              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.02)'
+            }}
+          >
+            <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{skill}</span>
+            <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '0.7rem' }}>+</span>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Micro-UI Component for Learning Roadmap Timeline
+const LearningRoadmapUI = () => {
+  const steps = [
+    { title: 'React Hooks', channel: 'YouTube Video', status: 'done', duration: '12m' },
+    { title: 'Docker Containers', channel: 'Official Docs', status: 'active', duration: '8m read' },
+    { title: 'Kubernetes basics', channel: 'Udemy Course', status: 'todo', duration: '2.5h' }
+  ];
+
+  return (
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      gap: '0.4rem',
+      padding: '0.8rem',
+      background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 100%)',
+      borderRadius: '20px',
+      border: '1px solid rgba(196, 181, 253, 0.25)',
+      height: '100%',
+      overflow: 'hidden',
+      position: 'relative',
+      userSelect: 'none'
+    }}>
+      {/* Progress connector line */}
+      <div style={{
+        position: 'absolute',
+        top: '32px',
+        left: '15%',
+        width: '70%',
+        height: '2px',
+        background: 'linear-gradient(to right, #00d2c4 40%, #cbd5e1 75%)',
+        zIndex: 1
+      }} />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
+        {steps.map((step, index) => (
+          <motion.div
+            key={step.title}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.12 }}
+            whileHover={{ y: -2 }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              width: '30%',
+              textAlign: 'center'
+            }}
+          >
+            {/* Step Node */}
+            <div style={{
+              width: '26px',
+              height: '26px',
+              borderRadius: '50%',
+              background: step.status === 'done' ? '#00d2c4' : step.status === 'active' ? '#fff' : '#e2e8f0',
+              color: step.status === 'done' ? '#000' : step.status === 'active' ? '#00d2c4' : '#64748b',
+              border: step.status === 'active' ? '2px solid #00d2c4' : 'none',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: step.status === 'active' ? '0 0 10px rgba(0, 210, 196, 0.4)' : 'none',
+              marginBottom: '0.4rem',
+              fontWeight: 800,
+              fontSize: '0.75rem'
+            }}>
+              {step.status === 'done' ? '✓' : index + 1}
+            </div>
+            {/* Title */}
+            <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0B0F19', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', width: '100%' }}>
+              {step.title}
+            </div>
+            {/* Subtext */}
+            <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontWeight: 600, whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', width: '100%' }}>
+              {step.channel} • {step.duration}
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const Welcome = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -114,7 +288,7 @@ const Welcome = () => {
         </motion.p>
 
         {/* CTA Area */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} style={{ display: 'flex', gap: '1.5rem', position: 'relative', zIndex: 50, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }} className="hero-buttons" style={{ display: 'flex', gap: '1.5rem', position: 'relative', zIndex: 50, alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
           <button
             onClick={() => navigate('/analyze')}
             style={{ background: '#0B0F19', color: '#fff', padding: '18px 40px', fontSize: '1.2rem', borderRadius: '99px', border: 'none', cursor: 'pointer', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '10px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)' }}
@@ -133,12 +307,29 @@ const Welcome = () => {
       {/* 2. Metrics & Image Banner */}
       <section className="container" style={{ padding: '2rem 2rem 6rem', position: 'relative', zIndex: 10 }}>
 
-        {/* Large Image Banner */}
+        {/* Large Vector Mapping Banner */}
         <div style={{ position: 'relative', width: '100%', maxWidth: '1000px', margin: '0 auto 6rem' }}>
-          <div className="responsive-container" style={{ background: '#0B0F19', width: '100%', minHeight: '250px', borderRadius: '40px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', color: '#fff', border: '8px solid #fff', boxShadow: '0 30px 60px rgba(0,0,0,0.08)', padding: '2rem' }}>
-            <div style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-cyan)', letterSpacing: '2px', marginBottom: '1rem', textAlign: 'center' }}>DIAGNOSTIC VIEW</div>
-            <div className="responsive-title" style={{ fontSize: '4rem', fontWeight: 800, textAlign: 'center' }}>Vector Mapping</div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.8 }}
+            whileHover={{ scale: 1.01 }}
+            style={{ width: '100%', minHeight: '280px', background: '#0B0F19', borderRadius: '40px', border: '8px solid #fff', boxShadow: '0 30px 60px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '1rem', position: 'relative', overflow: 'hidden', padding: '3rem 2rem' }}
+          >
+            {/* Background grid lines */}
+            <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(56,178,172,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(56,178,172,0.06) 1px, transparent 1px)', backgroundSize: '48px 48px', pointerEvents: 'none' }} />
+            {/* Glow orbs */}
+            <div style={{ position: 'absolute', top: '-60px', left: '15%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(110,231,183,0.12) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            <div style={{ position: 'absolute', bottom: '-60px', right: '15%', width: '300px', height: '300px', background: 'radial-gradient(circle, rgba(56,178,172,0.1) 0%, transparent 70%)', pointerEvents: 'none' }} />
+            {/* Label */}
+            <div style={{ fontSize: '0.7rem', fontWeight: 800, letterSpacing: '3px', textTransform: 'uppercase', color: 'var(--color-cyan)', position: 'relative', zIndex: 2 }}>Diagnostic View</div>
+            {/* Heading */}
+            <div style={{ fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', fontWeight: 800, color: '#fff', letterSpacing: '-0.04em', lineHeight: 1, position: 'relative', zIndex: 2, textAlign: 'center' }}>Vector Mapping</div>
+            {/* Animated nodes row */}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', gap: '0.6rem', marginTop: '0.5rem', position: 'relative', zIndex: 2 }}>
+              {['React', 'Node.js', 'MongoDB', 'Docker', 'AWS'].map((skill, i) => (
+                <motion.div key={skill} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '99px', padding: '6px 16px', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.7)' }}>{skill}</motion.div>
+              ))}
+            </div>
+          </motion.div>
 
           {/* Floating Badge */}
           <motion.div
@@ -191,28 +382,98 @@ const Welcome = () => {
         </div>
 
         <div className="mobile-stack" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '2rem' }}>
-          {/* Left Card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} style={{ background: '#fff', borderRadius: '40px', padding: '3rem', position: 'relative', overflow: 'hidden', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 20px 40px rgba(0,0,0,0.03)', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '3rem' }}>
-              <div style={{ background: 'var(--color-cyan)', width: '48px', height: '48px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000' }}>
-                <Zap size={24} />
-              </div>
-              <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>83%</div>
-                <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' }}>Autonomous Resolution</div>
-              </div>
+          {/* Left Card: Matched vs Missing */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8, boxShadow: '0 30px 60px rgba(56, 178, 172, 0.08)' }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 30%, #f0fdfa 100%)',
+              borderRadius: '40px',
+              padding: '2.5rem',
+              position: 'relative',
+              overflow: 'hidden',
+              border: '1px solid rgba(56, 178, 172, 0.15)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              minHeight: '440px',
+              cursor: 'pointer'
+            }}
+          >
+            {/* 83% — absolute top-right */}
+            <div style={{ position: 'absolute', top: '2.5rem', right: '2.5rem', textAlign: 'right', zIndex: 2 }}>
+              <div style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>83%</div>
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' }}>Autonomous Resolution</div>
             </div>
-            <h3 style={{ fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '1rem' }}>Matched vs Missing</h3>
-            <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '400px', lineHeight: 1.6, marginBottom: '2rem' }}>We instantly separate what you know from what you need to land the job you want.</p>
-            <div style={{ background: '#f3f4f6', flex: 1, borderRadius: '24px', marginTop: 'auto', minHeight: '200px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.2rem', fontWeight: 700 }}>
-              Image Placeholder
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: '2rem', height: '100%', alignItems: 'center' }} className="mobile-stack">
+              {/* Text side */}
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+                <div>
+                  <div style={{ marginBottom: '2rem' }}>
+                    <div style={{ background: 'var(--color-cyan)', width: '48px', height: '48px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000' }}>
+                      <Zap size={24} />
+                    </div>
+                  </div>
+                  <h3 style={{ fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '1rem', color: '#0B0F19', lineHeight: 1.1 }}>Matched vs Missing</h3>
+                  <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.5, marginBottom: 0 }}>
+                    We instantly analyze and separate your existing competencies from the critical skills needed for your target role.
+                  </p>
+                </div>
+              </div>
+
+              {/* UI Mockup side */}
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <MatchedVsMissingUI />
+              </div>
             </div>
           </motion.div>
 
-          {/* Right Card */}
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} viewport={{ once: true }} style={{ background: 'var(--color-cyan)', borderRadius: '40px', padding: '3rem', color: '#0B0F19' }}>
-            <h3 style={{ fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '1.5rem' }}>Learning Roadmap</h3>
-            <p style={{ fontSize: '1.1rem', lineHeight: 1.6, opacity: 0.85 }}>Get curated YouTube links, documentation, and online courses tailored to bridge your unique skill gaps.</p>
+          {/* Right Card: Learning Roadmap */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            viewport={{ once: true }}
+            whileHover={{ y: -8, boxShadow: '0 30px 60px rgba(196, 181, 253, 0.1)' }}
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 30%, #faf5ff 100%)',
+              borderRadius: '40px',
+              padding: '2.5rem',
+              position: 'relative',
+              overflow: 'hidden',
+              border: '1px solid rgba(196, 181, 253, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              minHeight: '440px',
+              cursor: 'pointer'
+            }}
+          >
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
+              <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem' }}>
+                  <div style={{ background: 'var(--color-purple)', width: '48px', height: '48px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#000' }}>
+                    <GraduationCap size={24} />
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '2.5rem', fontWeight: 800, letterSpacing: '-0.04em', lineHeight: 1 }}>4x</div>
+                    <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' }}>Faster Upskilling</div>
+                  </div>
+                </div>
+                <h3 style={{ fontSize: '2.2rem', fontWeight: 800, letterSpacing: '-0.04em', marginBottom: '1rem', color: '#0B0F19', lineHeight: 1.1 }}>Learning Roadmap</h3>
+                <p style={{ color: 'var(--text-muted)', fontSize: '1.05rem', lineHeight: 1.5, marginBottom: '2rem' }}>
+                  Receive custom-curated, step-by-step learning modules with recommended resources to build missing skills fast.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <LearningRoadmapUI />
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>
@@ -241,8 +502,14 @@ const Welcome = () => {
               ))}
             </div>
           </div>
-          <div style={{ background: '#f3f4f6', height: '700px', borderRadius: '40px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#aaa', fontSize: '1.5rem', fontWeight: 700 }}>
-            Portrait Image
+          <div className="mobile-hidden" style={{ height: '700px', borderRadius: '40px', overflow: 'hidden', boxShadow: '0 30px 60px rgba(0,0,0,0.05)', border: '1px solid rgba(0,0,0,0.05)' }}>
+            <motion.img
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.5 }}
+              src={onboardingPortraitImg}
+              alt="Holographic career roadmap onboarding visualization"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
           </div>
         </div>
       </section>
@@ -256,13 +523,13 @@ const Welcome = () => {
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem' }}>
           {[
-            { color: 'var(--color-green)', name: 'Sarah Jenkins', role: 'SENIOR DEV', text: '"The JD Score feature is a game changer. It told me exactly why I was getting rejected and gave me the roadmap to fix it."', img: '1' },
-            { color: 'var(--color-purple)', name: 'Marcus Thorne', role: 'PRODUCT MANAGER', text: '"I used the resume refinements to boost my ATS score. The learning links were spot on—no more searching YouTube for hours."', img: '2' },
-            { color: 'var(--color-lime)', name: 'Lina Wang', role: 'UX DESIGNER', text: '"Seeing my matched vs missing skills clearly laid out helped me focus my study time. I landed a senior role within a month."', img: '3' }
+            { color: 'var(--color-green)', name: 'Sarah Jenkins', role: 'SENIOR DEV', text: '"The JD Score feature is a game changer. It told me exactly why I was getting rejected and gave me the roadmap to fix it."', avatar: avatarSarah },
+            { color: 'var(--color-purple)', name: 'Marcus Thorne', role: 'PRODUCT MANAGER', text: '"I used the resume refinements to boost my ATS score. The learning links were spot on—no more searching YouTube for hours."', avatar: avatarMarcus },
+            { color: 'var(--color-lime)', name: 'Lina Wang', role: 'UX DESIGNER', text: '"Seeing my matched vs missing skills clearly laid out helped me focus my study time. I landed a senior role within a month."', avatar: avatarLina }
           ].map((test, i) => (
             <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} viewport={{ once: true }} style={{ background: test.color, padding: '2.5rem', borderRadius: '32px', color: '#0B0F19', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <img src={`https://i.pravatar.cc/100?img=${parseInt(test.img) + 20}`} alt={test.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
+                <img src={test.avatar} alt={test.name} style={{ width: '50px', height: '50px', borderRadius: '50%', objectFit: 'cover' }} />
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '1.1rem' }}>{test.name}</div>
                   <div style={{ fontSize: '0.7rem', fontWeight: 800, opacity: 0.6, letterSpacing: '1px' }}>{test.role}</div>
@@ -280,7 +547,7 @@ const Welcome = () => {
           <h2 style={{ fontSize: '3.5rem', fontWeight: 800, letterSpacing: '-0.04em', color: '#0B0F19', marginBottom: '1rem' }}>Common Questions</h2>
           <p style={{ color: 'var(--text-muted)', fontSize: '1.2rem', maxWidth: '600px', margin: '0 auto' }}>Everything you need to know about BluePrint analysis.</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '2rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 400px), 1fr))', gap: '2rem' }}>
           {[
             { q: "How accurate is the JD score?", a: "Our AI uses semantic vector mapping to ensure 98% accuracy in skill identification vs requirements." },
             { q: "Is my resume data secure?", a: "Yes, we use enterprise-grade encryption. Your data is analyzed in a secure sandbox and never sold." },
@@ -307,7 +574,7 @@ const Welcome = () => {
           <p style={{ fontSize: '1.4rem', color: 'rgba(255,255,255,0.7)', maxWidth: '600px', margin: '0 auto 4rem', lineHeight: 1.5, position: 'relative', zIndex: 10 }}>
             Start your journey towards mastery today. Join professionals using AI to outpace the market.
           </p>
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', position: 'relative', zIndex: 10, flexWrap: 'wrap' }}>
+          <div className="hero-buttons" style={{ display: 'flex', justifyContent: 'center', gap: '1.5rem', position: 'relative', zIndex: 10, flexWrap: 'wrap' }}>
             <Link to="/register" style={{ background: '#fff', color: '#050b14', padding: '16px 32px', fontSize: '1.1rem', fontWeight: 800, borderRadius: '99px', textDecoration: 'none' }}>
               Start Analysis
             </Link>
@@ -323,7 +590,7 @@ const Welcome = () => {
         <div className="container" style={{ padding: 0 }}>
 
           {/* Top Bar: Fake Search & Socials */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '99px', marginBottom: '6rem' }}>
+          <div className="footer-top-bar" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.1)', padding: '12px 24px', borderRadius: '99px', marginBottom: '6rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', opacity: 0.7 }}>
               <div style={{ background: '#fff', width: '20px', height: '20px', borderRadius: '4px' }} />
               <span style={{ fontSize: '0.9rem' }}>Bridge the gap between your resume and your dream job description</span>
@@ -385,7 +652,7 @@ const Welcome = () => {
           </div>
 
           {/* Bottom Bar */}
-          <div className="mobile-stack" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
+          <div className="mobile-stack-flex" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '2rem' }}>
             <div>
               <div style={{ fontSize: '0.8rem', letterSpacing: '1px', opacity: 0.6, marginBottom: '0.5rem' }}>ALL RIGHTS RESERVED.</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 600, letterSpacing: '-1px' }}>© 2026 BluePrint</div>

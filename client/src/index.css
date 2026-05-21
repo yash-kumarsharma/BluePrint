@@ -39,7 +39,7 @@ body {
 /* Fluid Typography & Layout Utilities */
 @media (max-width: 768px) {
   .responsive-title {
-    font-size: 3.5rem !important;
+    font-size: 3rem !important;
     line-height: 1.1 !important;
   }
   .responsive-subtitle {
@@ -52,8 +52,29 @@ body {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
   }
+  .mobile-stack-flex {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1.5rem !important;
+  }
   .mobile-hidden {
     display: none !important;
+  }
+  .hero-buttons {
+    flex-direction: column !important;
+    width: 100%;
+  }
+  .hero-buttons button, .hero-buttons a {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+  }
+  .footer-top-bar {
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    text-align: center;
+    border-radius: 32px !important;
   }
 }
 
