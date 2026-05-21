@@ -1,4 +1,5 @@
 const pdfParse = require('pdf-parse');
+const cheerio = require('cheerio');
 const axios = require('axios');
 const Analysis = require('../models/Analysis');
 
@@ -203,5 +204,147 @@ exports.deleteAnalysis = async (req, res) => {
     res.status(200).json({ success: true, message: 'Analysis removed' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Failed to delete analysis' });
+  }
+};
+
+// @desc    Scrape Job Description from URL and Clean using Gemini API
+// @route   POST /api/analysis/scrape-jd
+// @access  Public
+exports.scrapeJobDescription = async (req, res) => {
+  try {
+    const { url } = req.body;
+    if (!url) {
+      return res.status(400).json({ success: false, message: 'Please provide a URL.' });
+    }
+
+    let textContent = '';
+    let methodUsed = '';
+
+    // 1. Try Jina Reader first (handles JS-rendering and Cloudflare bypass)
+    try {
+      console.log(`[Scraper] Attempting to fetch content via Jina Reader for: ${url}`);
+      const jinaResponse = await axios.get(`https://r.jina.ai/${url}`, {
+        timeout: 10000,
+        headers: {
+          'Accept': 'text/plain'
+        }
+      });
+      if (jinaResponse.data && typeof jinaResponse.data === 'string' && jinaResponse.data.length > 100) {
+        textContent = jinaResponse.data;
+        methodUsed = 'Jina Reader';
+        console.log(`[Scraper] Successfully fetched content via Jina Reader.`);
+      }
+    } catch (jinaError) {
+      console.warn(`[Scraper] Jina Reader failed: ${jinaError.message}. Trying direct axios fallback...`);
+    }
+
+    // 2. Fallback to direct Axios + Cheerio parse
+    if (!textContent) {
+      try {
+        console.log(`[Scraper] Attempting direct fetch for: ${url}`);
+        const directResponse = await axios.get(url, {
+          timeout: 10000,
+          headers: {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept-Language': 'en-US,en;q=0.5'
+          }
+        });
+
+        if (directResponse.data) {
+          const $ = cheerio.load(directResponse.data);
+          
+          // Remove scripts, styles, navs, footers, headers to keep body text clean
+          $('script, style, nav, footer, header, iframe, noscript').remove();
+          
+          // Get clean body text
+          textContent = $('body').text().replace(/\s+/g, ' ').trim();
+          methodUsed = 'Direct Axios + Cheerio';
+          console.log(`[Scraper] Successfully fetched content directly.`);
+        }
+      } catch (directError) {
+        console.error(`[Scraper] Direct fetch failed: ${directError.message}`);
+        throw new Error('Failed to retrieve the job page content. Both scraping routes were blocked or timed out.');
+      }
+    }
+
+    if (!textContent || textContent.length < 100) {
+      throw new Error('Extracted text content from the URL is empty or too short.');
+    }
+
+    // 3. Gemini cleaning pass to isolate Job Title, Company, and Job Description/Requirements
+    if (!process.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY === 'your_gemini_api_key_here') {
+      // If no key is set, just return a truncated portion of the raw text as fallback
+      return res.status(200).json({
+        success: true,
+        method: methodUsed,
+        text: textContent.slice(0, 1000)
+      });
+    }
+
+    console.log(`[Scraper] Cleaning up content with Gemini API...`);
+    const cleanPrompt = `
+You are a technical recruiter assistant.
+I will give you raw page text scraped from a job board or career page.
+Extract the relevant job description information and format it into a clean, readable text description.
+It must contain:
+1. Job Title
+2. Company Name
+3. Role Overview / About the Role
+4. Key Responsibilities
+5. Core Requirements / Qualifications
+
+Filter out all navigational items, website policies, headers/footers, login prompts, unrelated ads, or other links. Keep only the job posting details.
+
+Raw Scraped Text:
+"""
+${textContent.slice(0, 8000)}
+"""
+    `;
+
+    // Try our fallback list of models
+    const models = ['gemini-2.5-flash', 'gemini-3-flash-preview', 'gemini-2.5-flash-lite'];
+    let geminiResponse = null;
+
+    for (const modelId of models) {
+      try {
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+        geminiResponse = await axios.post(geminiUrl, {
+          contents: [{
+            parts: [{ text: cleanPrompt }]
+          }]
+        }, { timeout: 15000 });
+
+        if (geminiResponse.data) {
+          break;
+        }
+      } catch (err) {
+        console.warn(`[Scraper] Gemini cleanup failed on ${modelId}: ${err.message}. Trying next model...`);
+      }
+    }
+
+    if (!geminiResponse) {
+      // If Gemini cleaning fails, fall back to returning a cleaned snippet of the parsed text
+      return res.status(200).json({
+        success: true,
+        method: methodUsed,
+        text: textContent.slice(0, 1500)
+      });
+    }
+
+    const cleanedText = geminiResponse.data.candidates[0].content.parts[0].text.trim();
+
+    return res.status(200).json({
+      success: true,
+      method: methodUsed,
+      text: cleanedText
+    });
+
+  } catch (error) {
+    console.error('[Scraper Error]:', error.message);
+    return res.status(500).json({
+      success: false,
+      message: error.message || 'An error occurred while scraping the job description URL.'
+    });
   }
 };

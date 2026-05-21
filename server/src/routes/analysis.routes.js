@@ -5,12 +5,14 @@ const {
   analyzeSkillGap, 
   getUserHistory, 
   getAnalysisById, 
-  deleteAnalysis 
+  deleteAnalysis,
+  scrapeJobDescription
 } = require('../controllers/analysis.controller');
 const { protect } = require('../middlewares/auth.middleware');
 
 // Public route for analysis
 router.post('/analyze-gap', upload.single('resume'), analyzeSkillGap);
+router.post('/scrape-jd', scrapeJobDescription);
 
 // Private routes
 router.get('/history', protect, getUserHistory);

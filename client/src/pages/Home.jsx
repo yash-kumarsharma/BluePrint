@@ -67,6 +67,49 @@ const Home = () => {
   const [activeTab, setActiveTab] = useState('matched');
   const resultsRef = useRef(null);
 
+  const [jdMode, setJdMode] = useState('paste'); // 'paste' or 'url'
+  const [scrapeUrl, setScrapeUrl] = useState('');
+  const [scraping, setScraping] = useState(false);
+  const [scrapeError, setScrapeError] = useState('');
+  const [scrapeSuccess, setScrapeSuccess] = useState(false);
+
+  const handleScrapeUrl = async () => {
+    if (!scrapeUrl) {
+      setScrapeError("Provide a valid Job Posting URL.");
+      return;
+    }
+    if (!scrapeUrl.startsWith('http://') && !scrapeUrl.startsWith('https://')) {
+      setScrapeError("URL must start with http:// or https://");
+      return;
+    }
+
+    try {
+      setScraping(true);
+      setScrapeError('');
+      setScrapeSuccess(false);
+
+      const response = await axios.post(`${API_ENDPOINTS.ANALYSIS}/scrape-jd`, {
+        url: scrapeUrl
+      });
+
+      if (response.data?.success) {
+        setJobDescription(response.data.text);
+        setScrapeSuccess(true);
+        setTimeout(() => {
+          setJdMode('paste');
+          setScrapeSuccess(false);
+          setScrapeUrl('');
+        }, 1500);
+      } else {
+        setScrapeError("Failed to parse the job posting.");
+      }
+    } catch (err) {
+      setScrapeError(err.response?.data?.message || "Failed to fetch job description. Please paste it manually.");
+    } finally {
+      setScraping(false);
+    }
+  };
+
   // 🔄 Fetch Analysis by ID if present in URL
   useEffect(() => {
     const query = new URLSearchParams(location.search);
@@ -185,15 +228,15 @@ const Home = () => {
               boxShadow: '0 40px 100px rgba(0,0,0,0.03)'
             }}
           >
-            <div style={{ textAlign: 'center', marginBottom: '5rem' }}>
-              <h1 style={{ fontSize: '3.2rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.2rem', letterSpacing: '-0.04em', lineHeight: 1.1, fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+            <div className="hero-header-container">
+              <h1 className="hero-title-top">
                 Analyze Your Resume Against
               </h1>
-              <h1 style={{ fontSize: '4rem', fontWeight: 950, color: '#12B8C9', marginBottom: '2rem', letterSpacing: '-0.05em', lineHeight: 1, fontFamily: '"Plus Jakarta Sans", sans-serif' }}>
+              <h1 className="hero-title-main">
                 Job Description
               </h1>
-              <p style={{ fontSize: '1.2rem', color: '#64748B', maxWidth: '700px', margin: '0 auto', fontWeight: 500, lineHeight: 1.6 }}>
-                Get instant insights on JD match, ATS compatibility, and your <br/> personalized improvement roadmap in seconds.
+              <p className="hero-subtitle">
+                Get instant insights on JD match, ATS compatibility, and your <span className="desktop-br"><br/></span> personalized improvement roadmap in seconds.
               </p>
             </div>
 
@@ -203,11 +246,11 @@ const Home = () => {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 800, color: '#38B2AC', letterSpacing: '1px', fontSize: '0.9rem' }}>
                    <Upload size={20} /> 1. UPLOAD YOUR RESUME
                 </div>
-                <div style={{ background: '#fff', borderRadius: '40px', padding: '3.5rem', border: '1px solid rgba(56, 178, 172, 0.1)', position: 'relative', transition: 'all 0.3s', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '280px', boxShadow: '0 20px 40px rgba(0,0,0,0.02)' }} className="hover-lift">
+                <div className="upload-box hover-lift">
                    <div style={{ background: '#E6F4F1', color: '#38B2AC', width: '70px', height: '70px', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem' }}>
                       <Upload size={32} />
                    </div>
-                   <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '1.2rem' }}>{file ? file.name : "Drag & drop PDF here"}</div>
+                   <div style={{ fontWeight: 800, color: '#0F172A', fontSize: '1.2rem', wordBreak: 'break-all', textAlign: 'center', padding: '0 1rem', maxWidth: '100%' }}>{file ? file.name : "Drag & drop PDF here"}</div>
                    <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '8px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 700 }}>OR CLICK TO BROWSE</div>
                    <input type="file" accept=".pdf" onChange={handleFileChange} style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer' }} />
                 </div>
@@ -215,16 +258,115 @@ const Home = () => {
 
               {/* JD Input Box */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 800, color: '#38B2AC', letterSpacing: '1px', fontSize: '0.9rem' }}>
-                   <FileCheck size={20} /> 2. PASTE JOB DESCRIPTION (JD)
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', fontWeight: 800, color: '#38B2AC', letterSpacing: '1px', fontSize: '0.9rem' }}>
+                     <FileCheck size={20} /> 2. JOB DESCRIPTION (JD)
+                  </div>
+                  <div style={{ display: 'flex', background: '#E2E8F0', padding: '4px', borderRadius: '12px', gap: '4px' }}>
+                    <button
+                      type="button"
+                      onClick={() => setJdMode('paste')}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: jdMode === 'paste' ? '#fff' : 'transparent',
+                        color: jdMode === 'paste' ? '#0F172A' : '#64748B',
+                        fontWeight: 800,
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        boxShadow: jdMode === 'paste' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      Paste Text
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setJdMode('url')}
+                      style={{
+                        padding: '6px 14px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: jdMode === 'url' ? '#fff' : 'transparent',
+                        color: jdMode === 'url' ? '#0F172A' : '#64748B',
+                        fontWeight: 800,
+                        fontSize: '0.75rem',
+                        cursor: 'pointer',
+                        boxShadow: jdMode === 'url' ? '0 2px 4px rgba(0,0,0,0.05)' : 'none',
+                        transition: 'all 0.2s'
+                      }}
+                    >
+                      Scrape URL
+                    </button>
+                  </div>
                 </div>
-                <div style={{ background: '#fff', borderRadius: '40px', padding: '1.5rem', border: '1px solid rgba(56, 178, 172, 0.1)', height: '280px', boxShadow: '0 20px 40px rgba(0,0,0,0.02)' }}>
-                  <textarea 
-                    placeholder="Copy and paste the full job description here... Detailed JD helps get better analysis!"
-                    value={jobDescription}
-                    onChange={(e) => setJobDescription(e.target.value)}
-                    style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', resize: 'none', outline: 'none', fontSize: '1.1rem', color: '#0F172A', lineHeight: 1.6 }}
-                  />
+
+                <div className="jd-input-box">
+                  {jdMode === 'paste' ? (
+                    <textarea 
+                      placeholder="Copy and paste the full job description here... Detailed JD helps get better analysis!"
+                      value={jobDescription}
+                      onChange={(e) => setJobDescription(e.target.value)}
+                      style={{ width: '100%', height: '100%', background: 'transparent', border: 'none', resize: 'none', outline: 'none', fontSize: '1.1rem', color: '#0F172A', lineHeight: 1.6 }}
+                    />
+                  ) : (
+                    <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', height: '100%', padding: '1rem', gap: '1rem' }}>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#64748B' }}>
+                        Paste any Job Posting link (LinkedIn, Google Careers, etc.) to fetch details using AI:
+                      </div>
+                      <div className="scrape-input-container">
+                        <input
+                          type="text"
+                          placeholder="https://careers.google.com/jobs/results/..."
+                          value={scrapeUrl}
+                          onChange={(e) => setScrapeUrl(e.target.value)}
+                          style={{
+                            flex: 1,
+                            padding: '14px 20px',
+                            borderRadius: '16px',
+                            border: '1px solid rgba(56, 178, 172, 0.2)',
+                            background: '#F8FAFC',
+                            fontSize: '1rem',
+                            outline: 'none',
+                            color: '#0F172A'
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={handleScrapeUrl}
+                          disabled={scraping}
+                          style={{
+                            background: 'linear-gradient(90deg, #12B8C9 0%, #38B2AC 100%)',
+                            color: '#fff',
+                            border: 'none',
+                            padding: '0 24px',
+                            borderRadius: '16px',
+                            fontWeight: 800,
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            transition: 'all 0.2s',
+                            boxShadow: '0 4px 12px rgba(18, 184, 201, 0.2)'
+                          }}
+                        >
+                          {scraping ? <Cpu className="spin" size={18} /> : <Sparkles size={18} />}
+                          <span>{scraping ? 'Importing...' : 'Fetch'}</span>
+                        </button>
+                      </div>
+                      {scrapeError && (
+                        <div style={{ color: '#EF4444', fontSize: '0.85rem', fontWeight: 600 }}>
+                          {scrapeError}
+                        </div>
+                      )}
+                      {scrapeSuccess && (
+                        <div style={{ color: '#10B981', fontSize: '0.85rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                          <CheckCircle2 size={16} /> Successfully extracted job details!
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -236,21 +378,7 @@ const Home = () => {
                  whileTap={{ scale: 0.98 }}
                  onClick={handleAnalyze} 
                  disabled={loading} 
-                 style={{ 
-                   background: 'linear-gradient(90deg, #12B8C9 0%, #38B2AC 100%)', 
-                   border: 'none', 
-                   color: '#fff', 
-                   padding: '24px 70px', 
-                   borderRadius: '99px', 
-                   fontWeight: 800, 
-                   fontSize: '1.6rem',
-                   display: 'inline-flex', 
-                   alignItems: 'center', 
-                   gap: '15px', 
-                   cursor: 'pointer',
-                   boxShadow: '0 20px 50px rgba(18, 184, 201, 0.4)',
-                   transition: 'all 0.3s'
-                 }}
+                 className="btn-analyze"
                >
                  {loading ? <Cpu className="spin" size={28} /> : <><span style={{ letterSpacing: '-0.02em' }}>Analyze & Match</span> <Sparkles size={28} /></>}
                </motion.button>
@@ -326,28 +454,28 @@ const Home = () => {
             <motion.div ref={resultsRef} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
               
               {/* Section 1: Compact Score Overview */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem', marginBottom: '2.5rem' }} className="mobile-stack">
-                <div style={{ background: 'linear-gradient(135deg, #38B2AC 0%, #319795 100%)', borderRadius: '32px', padding: '2.5rem 2rem', color: '#fff', textAlign: 'center' }}>
-                  <div style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>{result.matchPercentage}%</div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, opacity: 0.9 }}>JD Match Score</h3>
+              <div className="score-overview-grid">
+                <div className="score-card teal-card">
+                  <div>{result.matchPercentage}%</div>
+                  <h3>JD Match Score</h3>
                 </div>
-                <div style={{ background: 'linear-gradient(135deg, #9F7AEA 0%, #805AD5 100%)', borderRadius: '32px', padding: '2.5rem 2rem', color: '#fff', textAlign: 'center' }}>
-                  <div style={{ fontSize: '3rem', fontWeight: 800, marginBottom: '0.5rem' }}>{result.atsScore}%</div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, opacity: 0.9 }}>ATS Score</h3>
+                <div className="score-card purple-card">
+                  <div>{result.atsScore}%</div>
+                  <h3>ATS Score</h3>
                 </div>
-                <div style={{ background: 'linear-gradient(135deg, #48BB78 0%, #38A169 100%)', borderRadius: '32px', padding: '2.5rem 2rem', color: '#fff', textAlign: 'center' }}>
+                <div className="score-card green-card">
                   <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginBottom: '0.5rem' }}>
                     {[1, 2, 3, 4, 5].map(s => <Star key={s} fill={s <= 4 ? "#fff" : "none"} size={24} />)}
                   </div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, opacity: 0.9 }}>Readiness</h3>
+                  <h3>Readiness</h3>
                 </div>
               </div>
 
               {/* Section 2: 3-Column Command Center (Skills | Radar | Refinements) */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr 1fr', gap: '1.5rem', marginBottom: '2.5rem' }} className="mobile-stack">
+              <div className="dashboard-grid">
                  
                  {/* Left: Tabbed Skills Card */}
-                 <div style={{ background: '#fff', borderRadius: '32px', border: '1px solid #E2E8F0', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+                 <div className="dashboard-card" style={{ overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', borderBottom: '1px solid #E2E8F0' }}>
                        <button 
                          onClick={() => setActiveTab('matched')}
@@ -382,7 +510,7 @@ const Home = () => {
                  </div>
 
                  {/* Middle: Skill Analysis Graph */}
-                 <div style={{ background: '#fff', borderRadius: '32px', border: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                 <div className="dashboard-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <div style={{ fontSize: '0.9rem', fontWeight: 800, color: '#64748B', marginBottom: '1rem', letterSpacing: '1px' }}>SKILL ANALYSIS</div>
                     <div style={{ width: '100%', height: '250px' }}>
                        <ResponsiveContainer width="100%" height="100%">
@@ -396,7 +524,7 @@ const Home = () => {
                  </div>
 
                  {/* Right: Resume Refinements */}
-                 <div style={{ background: '#fff', borderRadius: '32px', border: '1px solid #E2E8F0', padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
+                 <div className="dashboard-card" style={{ padding: '1.5rem', display: 'flex', flexDirection: 'column' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.2rem' }}>
                        <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#0F172A' }}>Refinements</h3>
                        <button onClick={handleDownloadPdf} style={{ background: '#F8FAFC', border: '1px solid #E2E8F0', padding: '6px 12px', borderRadius: '10px', fontSize: '0.7rem', fontWeight: 700, cursor: 'pointer' }}>
@@ -414,27 +542,27 @@ const Home = () => {
               </div>
 
               {/* Section 3: Compact Roadmap Card (Local Scroll) */}
-              <div style={{ background: '#fff', borderRadius: '32px', border: '1px solid #E2E8F0', padding: '2.5rem', marginBottom: '2.5rem' }}>
+              <div className="roadmap-card">
                  <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <h2 style={{ fontSize: '1.8rem', fontWeight: 800, color: '#0F172A' }}>Phased Execution Roadmap</h2>
                     <p style={{ color: '#64748B', fontSize: '0.9rem' }}>Scroll through your 90-day mastery plan</p>
                  </div>
                  
-                 <div style={{ maxHeight: '450px', overflowY: 'auto', paddingRight: '1rem', background: '#F8FAFC', borderRadius: '24px', padding: '2rem' }}>
+                 <div className="roadmap-scroll-container">
                     <div style={{ position: 'relative' }}>
-                       <div style={{ position: 'absolute', left: '20px', top: '0', bottom: '0', width: '2px', background: '#E2E8F0' }} />
+                       <div className="roadmap-timeline-line" />
                        {result.roadmap.map((step, i) => (
-                         <div key={i} style={{ position: 'relative', paddingLeft: '60px', marginBottom: '2.5rem' }}>
-                            <div style={{ position: 'absolute', left: '0', top: '0', width: '42px', height: '42px', background: i === 0 ? '#38B2AC' : '#fff', color: i === 0 ? '#fff' : '#38B2AC', border: '2px solid #38B2AC', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.9rem', zIndex: 10 }}>
+                         <div key={i} className="roadmap-step-item">
+                            <div className="roadmap-step-badge" style={{ background: i === 0 ? '#38B2AC' : '#fff', color: i === 0 ? '#fff' : '#38B2AC' }}>
                                {i+1}
                             </div>
-                            <div style={{ background: '#fff', padding: '1.5rem', borderRadius: '20px', border: '1px solid #E2E8F0', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
-                               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
+                            <div className="roadmap-step-content">
+                               <div className="roadmap-step-header">
                                   <h4 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#0F172A' }}>Phase {i+1}: {step.task}</h4>
                                   <div style={{ display: 'flex', gap: '8px' }}>
                                      <span style={{ fontSize: '0.7rem', fontWeight: 800, background: '#E6FFFA', color: '#2C7A7B', padding: '4px 10px', borderRadius: '6px' }}>{step.duration}</span>
                                   </div>
-                               </div>
+                                </div>
                                <p style={{ color: '#64748B', fontSize: '0.9rem', lineHeight: 1.5 }}>{result.recommendations[i] || 'Focus on fundamental concepts and practical implementation.'}</p>
                             </div>
                          </div>
@@ -444,16 +572,16 @@ const Home = () => {
               </div>
 
               {/* Section 4: Learning Resources (YouTube/Docs) - Vibrant Styling */}
-              <div style={{ background: 'linear-gradient(135deg, #38B2AC 0%, #319795 100%)', borderRadius: '40px', padding: '4rem 3rem', color: '#fff', position: 'relative', overflow: 'hidden' }}>
+              <div className="resources-section">
                  <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '300px', height: '300px', background: 'rgba(255,255,255,0.1)', borderRadius: '50%' }} />
                  <div style={{ position: 'absolute', bottom: '-50px', left: '-50px', width: '200px', height: '200px', background: 'rgba(0,0,0,0.05)', borderRadius: '50%' }} />
                  
                  <div style={{ textAlign: 'center', marginBottom: '3rem', position: 'relative', zIndex: 10 }}>
                     <div style={{ background: 'rgba(255,255,255,0.2)', display: 'inline-block', padding: '8px 20px', borderRadius: '99px', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '2px', marginBottom: '1rem' }}>RESOURCES</div>
-                    <h2 className="font-serif" style={{ fontSize: '3rem', fontWeight: 800 }}>Start Your Mastery.</h2>
+                    <h2 className="font-serif resources-title">Start Your Mastery.</h2>
                  </div>
 
-                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem', position: 'relative', zIndex: 10 }}>
+                 <div className="resources-grid">
                     {result.roadmap.map((step, i) => {
                        const resource = result.learningResources?.[i];
                        if (!resource) return null;
@@ -468,7 +596,8 @@ const Home = () => {
                            href={resource.url} 
                            target="_blank" 
                            rel="noopener noreferrer" 
-                           style={{ background: cardGradients[i % 2], backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.2)', padding: '2.5rem 2rem', borderRadius: '32px', textDecoration: 'none', color: '#fff', display: 'flex', flexDirection: 'column', gap: '1.2rem', transition: 'all 0.3s' }}
+                           className="resource-card"
+                           style={{ background: cardGradients[i % 2] }}
                          >
                            <div style={{ background: '#fff', width: '50px', height: '50px', borderRadius: '15px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#38B2AC', boxShadow: '0 8px 16px rgba(0,0,0,0.1)' }}>
                               {resource.platform === 'YouTube' ? <Play size={24} /> : <BookOpen size={24} />}
@@ -487,8 +616,8 @@ const Home = () => {
               </div>
 
               {/* Reset Action */}
-              <div style={{ textAlign: 'center', marginTop: '6rem' }}>
-                 <button onClick={() => { setResult(null); setFile(null); setJobDescription(''); }} style={{ background: '#0F172A', color: '#fff', padding: '18px 40px', borderRadius: '99px', fontWeight: 800, border: 'none', cursor: 'pointer', fontSize: '1.1rem' }}>
+              <div className="reset-action-container">
+                 <button onClick={() => { setResult(null); setFile(null); setJobDescription(''); }} className="btn-reset">
                     Analyze Another Profile
                  </button>
               </div>
@@ -497,11 +626,41 @@ const Home = () => {
           )}
         </AnimatePresence>
 
-      </div>
-      {/* 🚀 RESPONSIVE CSS */}
+        {/* 🚀 RESPONSIVE CSS */}
       <style dangerouslySetInnerHTML={{ __html: `
+        .hero-header-container {
+          text-align: center;
+          margin-bottom: clamp(2rem, 8vw, 5rem);
+        }
+        .hero-title-top {
+          font-size: clamp(1.8rem, 5vw, 3.2rem);
+          font-weight: 900;
+          color: #0F172A;
+          margin-bottom: 0.2rem;
+          letter-spacing: -0.04em;
+          line-height: 1.15;
+          font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .hero-title-main {
+          font-size: clamp(2.2rem, 6vw, 4rem);
+          font-weight: 950;
+          color: #12B8C9;
+          margin-bottom: 1.5rem;
+          letter-spacing: -0.05em;
+          line-height: 1.1;
+          font-family: "Plus Jakarta Sans", sans-serif;
+        }
+        .hero-subtitle {
+          font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+          color: #64748B;
+          max-width: 700px;
+          margin: 0 auto;
+          font-weight: 500;
+          line-height: 1.6;
+        }
         .responsive-workspace-card {
           padding: 4rem;
+          border-radius: clamp(24px, 5vw, 60px) !important;
         }
         .input-layout-grid, .results-layout-grid {
           display: grid;
@@ -509,6 +668,199 @@ const Home = () => {
         }
         .input-layout-grid { grid-template-columns: 1.2fr 1fr; }
         .results-layout-grid { grid-template-columns: 1fr 1.5fr; }
+        
+        .upload-box {
+          background: #fff;
+          border-radius: clamp(20px, 4vw, 40px);
+          padding: clamp(2rem, 5vw, 3.5rem);
+          border: 1px solid rgba(56, 178, 172, 0.1);
+          position: relative;
+          transition: all 0.3s;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          height: 280px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+        }
+        .jd-input-box {
+          background: #fff;
+          border-radius: clamp(20px, 4vw, 40px);
+          padding: 1.5rem;
+          border: 1px solid rgba(56, 178, 172, 0.1);
+          height: 280px;
+          box-shadow: 0 20px 40px rgba(0,0,0,0.02);
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+        .scrape-input-container {
+          display: flex;
+          gap: 0.8rem;
+        }
+        .btn-analyze {
+          background: linear-gradient(90deg, #12B8C9 0%, #38B2AC 100%);
+          border: none;
+          color: #fff;
+          padding: clamp(16px, 3.5vw, 24px) clamp(30px, 7vw, 70px);
+          border-radius: 99px;
+          font-weight: 800;
+          font-size: clamp(1.1rem, 3.5vw, 1.6rem);
+          display: inline-flex;
+          align-items: center;
+          gap: 15px;
+          cursor: pointer;
+          box-shadow: 0 20px 50px rgba(18, 184, 201, 0.4);
+          transition: all 0.3s;
+        }
+
+        /* Results dashboard responsive styling */
+        .score-overview-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1.5rem;
+          margin-bottom: 2.5rem;
+        }
+        .score-card {
+          border-radius: 32px;
+          padding: 2.5rem 2rem;
+          color: #fff;
+          text-align: center;
+          transition: transform 0.2s;
+        }
+        .score-card div {
+          font-size: clamp(2.2rem, 5vw, 3rem);
+          font-weight: 800;
+          margin-bottom: 0.5rem;
+        }
+        .score-card h3 {
+          font-size: clamp(0.95rem, 2vw, 1.1rem);
+          font-weight: 800;
+          opacity: 0.9;
+        }
+        .teal-card {
+          background: linear-gradient(135deg, #38B2AC 0%, #319795 100%);
+        }
+        .purple-card {
+          background: linear-gradient(135deg, #9F7AEA 0%, #805AD5 100%);
+        }
+        .green-card {
+          background: linear-gradient(135deg, #48BB78 0%, #38A169 100%);
+        }
+        .dashboard-grid {
+          display: grid;
+          grid-template-columns: 1fr 1.2fr 1fr;
+          gap: 1.5rem;
+          margin-bottom: 2.5rem;
+        }
+        .dashboard-card {
+          background: #fff;
+          border-radius: 32px;
+          border: 1px solid #E2E8F0;
+          transition: all 0.3s;
+        }
+        .roadmap-card {
+          background: #fff;
+          border-radius: 32px;
+          border: 1px solid #E2E8F0;
+          padding: 2.5rem;
+          margin-bottom: 2.5rem;
+        }
+        .roadmap-scroll-container {
+          max-height: 450px;
+          overflow-y: auto;
+          background: #F8FAFC;
+          border-radius: 24px;
+          padding: 2rem;
+        }
+        .roadmap-timeline-line {
+          position: absolute;
+          left: 20px;
+          top: 0;
+          bottom: 0;
+          width: 2px;
+          background: #E2E8F0;
+        }
+        .roadmap-step-item {
+          position: relative;
+          padding-left: 60px;
+          margin-bottom: 2.5rem;
+        }
+        .roadmap-step-badge {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 42px;
+          height: 42px;
+          border: 2px solid #38B2AC;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 800;
+          font-size: 0.9rem;
+          z-index: 10;
+        }
+        .roadmap-step-content {
+          background: #fff;
+          padding: 1.5rem;
+          border-radius: 20px;
+          border: 1px solid #E2E8F0;
+          box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .roadmap-step-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 0.8rem;
+          gap: 1rem;
+        }
+        .resources-section {
+          background: linear-gradient(135deg, #38B2AC 0%, #319795 100%);
+          border-radius: 40px;
+          padding: 4rem 3rem;
+          color: #fff;
+          position: relative;
+          overflow: hidden;
+        }
+        .resources-title {
+          font-size: clamp(2rem, 5vw, 3rem);
+          font-weight: 800;
+        }
+        .resources-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          gap: 1.5rem;
+          position: relative;
+          z-index: 10;
+        }
+        .resource-card {
+          backdrop-filter: blur(10px);
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.2rem, 3vw, 2rem);
+          border-radius: clamp(20px, 4vw, 32px);
+          text-decoration: none;
+          color: #fff;
+          display: flex;
+          flex-direction: column;
+          gap: 1.2rem;
+          transition: all 0.3s;
+        }
+        .reset-action-container {
+          text-align: center;
+          margin-top: 6rem;
+        }
+        .btn-reset {
+          background: #0F172A;
+          color: #fff;
+          padding: 18px 40px;
+          border-radius: 99px;
+          font-weight: 800;
+          border: none;
+          cursor: pointer;
+          font-size: 1.1rem;
+          transition: all 0.2s;
+        }
 
         @media (max-width: 1024px) {
           .input-layout-grid, .results-layout-grid {
@@ -517,18 +869,23 @@ const Home = () => {
           }
           .responsive-workspace-card {
             padding: 2.5rem !important;
-            border-radius: 40px !important;
+          }
+          .dashboard-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
           }
         }
         @media (max-width: 768px) {
           .responsive-workspace-card {
             padding: 1.5rem !important;
-            border-radius: 32px !important;
             margin-top: 1rem !important;
           }
-          .input-layout-grid > div > div, .results-layout-grid > div > div {
-            padding: 1.5rem !important;
-            border-radius: 24px !important;
+          .upload-box {
+            height: 220px;
+          }
+          .jd-input-box {
+            height: auto;
+            min-height: 250px;
           }
           textarea {
             height: 250px !important;
@@ -537,8 +894,80 @@ const Home = () => {
             flex-direction: column;
             gap: 1.5rem;
           }
+          .btn-analyze {
+            width: 100%;
+            max-width: 400px;
+            justify-content: center;
+          }
+          .score-card {
+            padding: 1.5rem 1rem;
+            border-radius: 20px;
+          }
+          .dashboard-card {
+            border-radius: 24px;
+          }
+          .roadmap-card {
+            border-radius: 24px;
+            padding: 1.5rem;
+          }
+          .roadmap-scroll-container {
+            padding: 1rem;
+            border-radius: 16px;
+          }
+          .resources-section {
+            border-radius: 24px;
+            padding: 2.5rem 1.5rem;
+          }
+          .reset-action-container {
+            margin-top: 3rem;
+          }
+          .btn-reset {
+            padding: 14px 30px;
+            font-size: 0.95rem;
+            width: 100%;
+            max-width: 300px;
+          }
+        }
+        @media (max-width: 640px) {
+          .roadmap-step-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.5rem;
+          }
+          .resources-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+        @media (max-width: 480px) {
+          .desktop-br {
+            display: none;
+          }
+          .scrape-input-container {
+            flex-direction: column;
+          }
+          .scrape-input-container button {
+            padding: 12px 20px !important;
+            justify-content: center;
+          }
+          .roadmap-timeline-line {
+            left: 15px;
+          }
+          .roadmap-step-item {
+            padding-left: 45px;
+            margin-bottom: 1.5rem;
+          }
+          .roadmap-step-badge {
+            width: 32px;
+            height: 32px;
+            font-size: 0.75rem;
+          }
+          .roadmap-step-content {
+            padding: 1rem;
+            border-radius: 14px;
+          }
         }
       `}} />
+      </div>
     </div>
   );
 };
