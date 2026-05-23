@@ -2,10 +2,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, BrainCircuit, Target, Code, ShieldCheck, Zap, Globe, Cpu, BarChart3, Layers, Send, FileSearch, Database, Route, Network, Upload, ArrowUpRight, GraduationCap, Map, Activity, CheckCircle2, ArrowUp } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import { useRef, useState } from 'react';
-import GalaxyBackground from '../components/GalaxyBackground';
-import InteractiveGlobe from '../components/InteractiveGlobe';
-
-
 import onboardingPortraitImg from '../assets/onboarding_portrait.png';
 import avatarSarah from '../assets/avatar_sarah.png';
 import avatarMarcus from '../assets/avatar_marcus.png';
@@ -243,10 +239,8 @@ const Welcome = () => {
   const heroRef = useRef(null);
   const finalCallRef = useRef(null);
 
-  const { scrollYProgress: heroScroll } = useScroll({ target: heroRef, offset: ["start start", "end start"] });
   const { scrollYProgress: finalScroll } = useScroll({ target: finalCallRef, offset: ["start end", "center center", "end start"] });
 
-  const galaxyOpacity = useTransform(heroScroll, [0, 0.7], [1, 0]);
   const ctaScale = useTransform(finalScroll, [0, 0.5, 1], [0.8, 1.1, 0.8]);
   const finalBgOpacity = useTransform(finalScroll, [0, 0.4, 0.6, 1], [0, 1, 1, 0]);
 
