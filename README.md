@@ -39,7 +39,7 @@ sequenceDiagram
     participant FE as React Client (Vite)
     participant BE as Express Server
     participant AI as Gemini API Nodes
-    database DB as MongoDB Database
+    participant DB as MongoDB Database
 
     User->>FE: Upload Resume (PDF) & Paste/Scrape Job Description
     FE->>BE: POST /api/analysis/analyze-gap (FormData)
