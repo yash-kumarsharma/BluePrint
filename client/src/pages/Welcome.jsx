@@ -1,7 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowRight, BrainCircuit, Target, Code, ShieldCheck, Zap, Globe, Cpu, BarChart3, Layers, Send, FileSearch, Database, Route, Network, Upload, ArrowUpRight, GraduationCap, Map, Activity, CheckCircle2, ArrowUp } from 'lucide-react';
 import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import onboardingPortraitImg from '../assets/onboarding_portrait.png';
 import avatarSarah from '../assets/avatar_sarah.png';
 import avatarMarcus from '../assets/avatar_marcus.png';
@@ -70,83 +70,111 @@ const MatchedVsMissingUI = () => {
   const matched = ['React & Redux', 'Node.js & Express', 'MongoDB', 'REST APIs'];
   const missing = ['Docker Containerization', 'Kubernetes Clusters', 'GraphQL Integration'];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.08
+      }
+    }
+  };
+
+  const itemLeft = {
+    hidden: { opacity: 0, x: -15 },
+    visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 120, damping: 14 } }
+  };
+
+  const itemRight = {
+    hidden: { opacity: 0, x: 15 },
+    visible: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 120, damping: 14 } }
+  };
+
   return (
-    <div style={{
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '0.8rem',
-      padding: '0.8rem',
-      background: 'linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%)',
-      borderRadius: '20px',
-      border: '1px solid rgba(0,0,0,0.06)',
-      height: '100%',
-      overflow: 'hidden',
-      userSelect: 'none'
-    }}>
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      style={{
+        display: 'grid',
+        gridTemplateColumns: '1fr 1fr',
+        gap: '0.8rem',
+        padding: '1.2rem',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(243, 244, 246, 0.5) 100%)',
+        backdropFilter: 'blur(12px)',
+        borderRadius: '24px',
+        border: '1px solid rgba(56, 178, 172, 0.12)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.02)',
+        height: '100%',
+        overflow: 'hidden',
+        userSelect: 'none'
+      }}
+    >
       {/* Matched Column */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', justifyContent: 'center' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#10b981', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <CheckCircle2 size={11} /> Matched
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', justifyContent: 'center' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#10b981', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <CheckCircle2 size={12} /> Matched
         </div>
-        {matched.map((skill, index) => (
+        {matched.map((skill) => (
           <motion.div
             key={skill}
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-            whileHover={{ scale: 1.02, x: 2 }}
+            variants={itemLeft}
+            whileHover={{ scale: 1.03, x: 3, boxShadow: '0 4px 12px rgba(16, 185, 129, 0.08)', border: '1px solid rgba(16, 185, 129, 0.3)' }}
             style={{
               background: '#fff',
               border: '1px solid rgba(16, 185, 129, 0.15)',
-              borderRadius: '8px',
-              padding: '5px 8px',
+              borderRadius: '10px',
+              padding: '6px 10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              fontSize: '0.75rem',
+              fontSize: '0.78rem',
               fontWeight: 700,
               color: '#065f46',
-              boxShadow: '0 2px 4px rgba(16, 185, 129, 0.02)'
+              boxShadow: '0 2px 4px rgba(16, 185, 129, 0.01)',
+              transition: 'border 0.2s, box-shadow 0.2s'
             }}
           >
             <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{skill}</span>
-            <span style={{ color: '#10b981', fontWeight: 900, fontSize: '0.7rem' }}>✓</span>
+            <span style={{ color: '#10b981', fontWeight: 900, fontSize: '0.75rem' }}>✓</span>
           </motion.div>
         ))}
       </div>
 
       {/* Missing Column */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', justifyContent: 'center' }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: '#ef4444', letterSpacing: '0.5px', textTransform: 'uppercase', marginBottom: '0.1rem', display: 'flex', alignItems: 'center', gap: '4px' }}>
-          <Activity size={11} /> Missing Gaps
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', justifyContent: 'center' }}>
+        <div style={{ fontSize: '0.72rem', fontWeight: 800, color: '#ef4444', letterSpacing: '0.8px', textTransform: 'uppercase', marginBottom: '0.2rem', display: 'flex', alignItems: 'center', gap: '5px' }}>
+          <Activity size={12} /> Missing Gaps
         </div>
-        {missing.map((skill, index) => (
+        {missing.map((skill) => (
           <motion.div
             key={skill}
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.08 }}
-            whileHover={{ scale: 1.02, x: -2 }}
+            variants={itemRight}
+            whileHover={{ scale: 1.03, x: -3, boxShadow: '0 4px 12px rgba(239, 68, 68, 0.08)', border: '1px solid rgba(239, 68, 68, 0.4)' }}
+            animate={{ borderColor: ['rgba(239, 68, 68, 0.15)', 'rgba(239, 68, 68, 0.45)', 'rgba(239, 68, 68, 0.15)'] }}
+            transition={{ repeat: Infinity, duration: 2.5, ease: 'easeInOut' }}
             style={{
               background: '#fff',
               border: '1px dashed rgba(239, 68, 68, 0.25)',
-              borderRadius: '8px',
-              padding: '5px 8px',
+              borderRadius: '10px',
+              padding: '6px 10px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
-              fontSize: '0.75rem',
+              fontSize: '0.78rem',
               fontWeight: 700,
               color: '#991b1b',
-              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.02)'
+              boxShadow: '0 2px 4px rgba(239, 68, 68, 0.01)',
+              transition: 'border 0.2s, box-shadow 0.2s'
             }}
           >
             <span style={{ whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>{skill}</span>
-            <span style={{ color: '#ef4444', fontWeight: 800, fontSize: '0.7rem' }}>+</span>
+            <span style={{ color: '#ef4444', fontWeight: 900, fontSize: '0.75rem' }}>+</span>
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -158,40 +186,66 @@ const LearningRoadmapUI = () => {
     { title: 'Kubernetes basics', channel: 'Udemy Course', status: 'todo', duration: '2.5h' }
   ];
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15
+      }
+    }
+  };
+
+  const nodeVariants = {
+    hidden: { opacity: 0, scale: 0.8, y: 15 },
+    visible: { opacity: 1, scale: 1, y: 0, transition: { type: 'spring', stiffness: 100, damping: 12 } }
+  };
+
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      gap: '0.4rem',
-      padding: '0.8rem',
-      background: 'linear-gradient(135deg, #ffffff 0%, #faf5ff 100%)',
-      borderRadius: '20px',
-      border: '1px solid rgba(196, 181, 253, 0.25)',
-      height: '100%',
-      overflow: 'hidden',
-      position: 'relative',
-      userSelect: 'none'
-    }}>
-      {/* Progress connector line */}
-      <div style={{
-        position: 'absolute',
-        top: '32px',
-        left: '15%',
-        width: '70%',
-        height: '2px',
-        background: 'linear-gradient(to right, #00d2c4 40%, #cbd5e1 75%)',
-        zIndex: 1
-      }} />
+    <motion.div 
+      variants={containerVariants}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, margin: "-80px" }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        gap: '0.4rem',
+        padding: '1.2rem',
+        background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(250, 245, 255, 0.5) 100%)',
+        backdropFilter: 'blur(12px)',
+        borderRadius: '24px',
+        border: '1px solid rgba(196, 181, 253, 0.22)',
+        boxShadow: '0 20px 40px rgba(0,0,0,0.02)',
+        height: '100%',
+        overflow: 'hidden',
+        position: 'relative',
+        userSelect: 'none'
+      }}
+    >
+      {/* Dynamic progress connector line */}
+      <motion.div 
+        initial={{ width: '0%' }}
+        whileInView={{ width: '70%' }}
+        viewport={{ once: true }}
+        transition={{ duration: 1.5, ease: 'easeInOut', delay: 0.2 }}
+        style={{
+          position: 'absolute',
+          top: '32px',
+          left: '15%',
+          height: '2px',
+          background: 'linear-gradient(to right, #00d2c4 40%, #c4b5fd 80%, #e2e8f0 100%)',
+          zIndex: 1
+        }} 
+      />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', position: 'relative', zIndex: 2 }}>
         {steps.map((step, index) => (
           <motion.div
             key={step.title}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.12 }}
-            whileHover={{ y: -2 }}
+            variants={nodeVariants}
+            whileHover={{ y: -4 }}
             style={{
               display: 'flex',
               flexDirection: 'column',
@@ -201,23 +255,73 @@ const LearningRoadmapUI = () => {
             }}
           >
             {/* Step Node */}
-            <div style={{
-              width: '26px',
-              height: '26px',
-              borderRadius: '50%',
-              background: step.status === 'done' ? '#00d2c4' : step.status === 'active' ? '#fff' : '#e2e8f0',
-              color: step.status === 'done' ? '#000' : step.status === 'active' ? '#00d2c4' : '#64748b',
-              border: step.status === 'active' ? '2px solid #00d2c4' : 'none',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: step.status === 'active' ? '0 0 10px rgba(0, 210, 196, 0.4)' : 'none',
-              marginBottom: '0.4rem',
-              fontWeight: 800,
-              fontSize: '0.75rem'
-            }}>
-              {step.status === 'done' ? '✓' : index + 1}
-            </div>
+            {step.status === 'active' ? (
+              <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '0.4rem' }}>
+                <motion.div
+                  animate={{ scale: [1, 1.4, 1], opacity: [0.6, 0, 0.6] }}
+                  transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' }}
+                  style={{
+                    position: 'absolute',
+                    width: '26px',
+                    height: '26px',
+                    borderRadius: '50%',
+                    border: '2px solid #00d2c4',
+                    pointerEvents: 'none'
+                  }}
+                />
+                <div style={{
+                  width: '26px',
+                  height: '26px',
+                  borderRadius: '50%',
+                  background: '#fff',
+                  color: '#00d2c4',
+                  border: '2px solid #00d2c4',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 800,
+                  fontSize: '0.75rem',
+                  boxShadow: '0 0 12px rgba(0, 210, 196, 0.35)',
+                  zIndex: 2
+                }}>
+                  {index + 1}
+                </div>
+              </div>
+            ) : step.status === 'done' ? (
+              <div style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                background: '#00d2c4',
+                color: '#000',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 10px rgba(0, 210, 196, 0.2)',
+                marginBottom: '0.4rem',
+                fontWeight: 800,
+                fontSize: '0.75rem'
+              }}>
+                ✓
+              </div>
+            ) : (
+              <div style={{
+                width: '26px',
+                height: '26px',
+                borderRadius: '50%',
+                background: '#e2e8f0',
+                color: '#64748b',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: '0.4rem',
+                fontWeight: 800,
+                fontSize: '0.75rem'
+              }}>
+                {index + 1}
+              </div>
+            )}
+            
             {/* Title */}
             <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#0B0F19', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden', width: '100%' }}>
               {step.title}
@@ -229,13 +333,12 @@ const LearningRoadmapUI = () => {
           </motion.div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 };
 
 const Welcome = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
   const heroRef = useRef(null);
   const finalCallRef = useRef(null);
 
@@ -243,12 +346,6 @@ const Welcome = () => {
 
   const ctaScale = useTransform(finalScroll, [0, 0.5, 1], [0.8, 1.1, 0.8]);
   const finalBgOpacity = useTransform(finalScroll, [0, 0.4, 0.6, 1], [0, 1, 1, 0]);
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    alert(`Subscribed: ${email}`);
-    setEmail('');
-  };
 
   return (
     <div style={{ overflowX: 'hidden' }}>
@@ -572,7 +669,7 @@ const Welcome = () => {
             <Link to="/register" style={{ background: '#fff', color: '#050b14', padding: '16px 32px', fontSize: '1.1rem', fontWeight: 800, borderRadius: '99px', textDecoration: 'none' }}>
               Start Analysis
             </Link>
-            <a href="#demo" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 32px', fontSize: '1.1rem', fontWeight: 700, borderRadius: '99px', textDecoration: 'none', transition: 'background 0.3s' }}>
+            <a href="#workflow" style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 32px', fontSize: '1.1rem', fontWeight: 700, borderRadius: '99px', textDecoration: 'none', transition: 'background 0.3s' }}>
               Request Demo
             </a>
           </div>

@@ -9,10 +9,7 @@ export default defineConfig({
       output: {
         // Manual chunk splitting to eliminate the 500kB warning and optimize load times
         manualChunks(id) {
-          // Group 3D graphics libraries (Three.js, R3F, Drei)
-          if (id.includes('three') || id.includes('@react-three')) {
-            return 'vendor-3d';
-          }
+
           // Group Data Visualization (Recharts)
           if (id.includes('recharts') || id.includes('d3')) {
             return 'vendor-charts';

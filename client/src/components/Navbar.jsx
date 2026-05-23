@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { Layers, Menu, X, Bell, ChevronDown } from 'lucide-react';
+import { Compass, Menu, X, Bell, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const Navbar = () => {
@@ -76,8 +76,8 @@ const Navbar = () => {
         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
       }}>
         <Link to="/" onClick={() => setIsOpen(false)} style={{ textDecoration: 'none', fontWeight: '950', fontSize: '1.4rem', color: '#0B0F19', letterSpacing: '-0.8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ background: 'var(--color-cyan)', color: '#fff', padding: '6px', borderRadius: '10px', display: 'flex' }}>
-            <Layers size={20} />
+          <div style={{ background: 'var(--color-cyan)', color: '#fff', padding: '6px', borderRadius: '10px', display: 'flex', boxShadow: '0 4px 10px rgba(56, 178, 172, 0.25)' }}>
+            <Compass size={20} />
           </div>
           BluePrint
         </Link>
