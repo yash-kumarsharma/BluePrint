@@ -1,12 +1,8 @@
-# <p align="center">BluePrint: AI Skill Gap Analysis Platform</p>
+# <p align="center">BluePrint: AI Skill Gap Analyzer</p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Build-Production--Ready-black?style=for-the-badge&logo=vercel" alt="Build Status">
   <img src="https://img.shields.io/badge/React-19.2.4-blue?style=for-the-badge&logo=react" alt="React">
-  <img src="https://img.shields.io/badge/Vite-8.0.4-purple?style=for-the-badge&logo=vite" alt="Vite">
-  <img src="https://img.shields.io/badge/Framer_Motion-12.38.0-pink?style=for-the-badge&logo=framer" alt="Framer Motion">
   <img src="https://img.shields.io/badge/Node.js-20.x-green?style=for-the-badge&logo=nodedotjs" alt="Node.js">
-  <img src="https://img.shields.io/badge/Express-5.2.1-lightgrey?style=for-the-badge&logo=express" alt="Express">
   <img src="https://img.shields.io/badge/MongoDB-9.4.1-green?style=for-the-badge&logo=mongodb" alt="MongoDB">
   <img src="https://img.shields.io/badge/Google_Gemini-API-orange?style=for-the-badge&logo=google-gemini" alt="Gemini Engine">
   <img src="https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge&logo=git" alt="License">
@@ -16,19 +12,20 @@
 
 ## 🚀 Overview
 
-**BluePrint AI** is a studio-grade career diagnostic platform designed to bridge the gap between academic profiles and industry requirements. Using advanced Large Language Model (LLM) orchestration and vector-based skill mapping, BluePrint analyzes your resume against any target Job Description to generate a high-fidelity **Analysis Matrix**, estimate **ATS Score compatibility**, list **matched and missing skills**, compile actionable **phased learning roadmaps**, and build a personalized **Knowledge Hub** with reference links.
+**BluePrint** is a studio-grade career diagnostic platform designed to bridge the gap between academic profiles and industry requirements. Using advanced LLM orchestration and vector-based skill mapping, BluePrint analyzes your resume against any target Job Description to generate a high-fidelity **Analysis Matrix**, estimate **ATS Score compatibility**, list **matched and missing skills**, compile actionable **phased learning roadmaps**, and build a personalized **Knowledge Hub** with reference links.
 
 The system features a **Self-Healing AI Node** pipeline to ensure high availability, an API-driven job requirement scraper powered by **Jina Reader**, and a pixel-perfect, off-screen **Shadow DOM PDF Export Engine** designed for exporting reports without breaking layout grids.
 
 ---
 
-## 🎨 UI Aesthetic & Design System
+## 💎 Key Features
 
-BluePrint is built with a premium, motion-heavy **Editorial Brutalist** design aesthetic. It prioritizes layout cleanliness, bold structural grids, and high-fidelity typography:
-
-- **Typography & Grid System:** Features a bespoke, fully responsive typography framework supporting fluid scaling down to mobile viewports. Bold borders (`8px solid #fff`), clean card separators, and custom color-matched gradients.
-- **Micro-Animations & Interactions:** Uses **Framer Motion** for smooth spring-physics transitions, layout shifts, step card stagger entries, hover zoom states (`scale: 1.03`), and a spring-followed global cursor glow overlay tracking mouse movements.
-- **Radar Diagnostic Grid:** Integrates responsive multi-axis **Recharts Radar Charts** inside the workbench, giving users an immediate visual model of their core technical strengths compared directly to target job descriptions.
+- **⚡ Vectorized Skill Diagnostic:** Real-time parity analysis mapping your resume's skills against target job descriptions.
+- **🛡️ Self-Healing AI Engine:** Built-in multi-model failover protection (attempting `gemini-2.5-flash` → `gemini-3-flash-preview` → `gemini-2.5-flash-lite` fallbacks) ensuring high availability.
+- **🎓 Knowledge Hub:** Dynamic extraction of targeted study resources (YouTube, GeeksforGeeks, LeetCode) directly correlating to detected skill gaps.
+- **🗺️ Phased Roadmap:** Chronological step-by-step career pathing divided into actionable phases with durations.
+- **📄 Shadow PDF Export:** High-fidelity, clean document generation using a hidden isolated DOM tree to prevent grid breaks.
+- **🔗 Jina URL Scraper:** Direct integration allowing copy-pasting of career posting URLs to parse and isolate job specifications automatically.
 
 ---
 
@@ -63,30 +60,30 @@ sequenceDiagram
     FE->>User: Trigger system download of styled document (html2pdf.js)
 ```
 
-### Technical Stack & Package Registry
+### 💻 Technical Stack Details
 
 | Layer | Technology | Version | Purpose |
 | :--- | :--- | :--- | :--- |
 | **Frontend** | React | `^19.2.4` | Component framework |
 | **Frontend** | Vite | `^8.0.4` | Build tool & Dev server |
-| **Frontend** | Framer Motion | `^12.38.0` | Springs, exits, and layout transitions |
+| **Frontend** | Framer Motion | `^12.38.0` | Motion layout transitions |
 | **Frontend** | Recharts | `^3.8.1` | Radar diagnostic chart rendering |
 | **Frontend** | Lucide React | `^1.8.0` | UI system icons |
 | **Backend** | Express | `^5.2.1` | HTTP web server and API routing |
 | **Backend** | Mongoose | `^9.4.1` | MongoDB Object Data Modeling (ODM) |
 | **Backend** | JSON Web Token | `^9.0.3` | User session tokenization |
 | **Backend** | Bcryptjs | `^3.0.3` | Password salting & hashing |
-| **Backend** | PDF Parse | `^1.1.1` | Extraction of raw text from uploaded files |
-| **Backend** | Cheerio / Axios | `^1.2.0` / `^1.15.0` | Direct crawling fallback mechanism |
+| **Backend** | PDF Parse | `^1.1.1` | Text extraction from uploaded files |
+| **Backend** | Cheerio / Axios | `^1.2.0` / `^1.15.0` | Crawling fallback mechanism |
 | **Backend** | Google GenAI | `^1.50.1` | Gemini LLM Node interactions |
 
 ---
 
 ## 📡 API Reference Guide
 
-All backend routing is prefixed with `/api`. All protected routes expect a `Bearer <token>` payload in the HTTP Authorization headers.
+All backend routing is prefixed with `/api`. Protected routes expect a `Bearer <token>` payload in the HTTP Authorization headers.
 
-### Authentication Endpoints
+### 🔑 Authentication Endpoints
 `Prefix: /api/auth`
 
 | Endpoint | Method | Access | Request Body | Success Response |
@@ -94,7 +91,7 @@ All backend routing is prefixed with `/api`. All protected routes expect a `Bear
 | `/register` | `POST` | Public | `{ "name": "Name", "email": "email@test.com", "password": "secure" }` | `{ "success": true, "_id": "...", "name": "Name", "email": "...", "token": "JWT" }` |
 | `/login` | `POST` | Public | `{ "email": "email@test.com", "password": "secure" }` | `{ "success": true, "_id": "...", "name": "Name", "email": "...", "token": "JWT" }` |
 
-### Analysis & Diagnostic Endpoints
+### 📊 Analysis & Diagnostic Endpoints
 `Prefix: /api/analysis`
 
 | Endpoint | Method | Access | Request Body / Parameters | Success Response |
@@ -109,8 +106,7 @@ All backend routing is prefixed with `/api`. All protected routes expect a `Bear
 
 ## 🗄️ Database Schemas
 
-### 1. User Model Schema
-Represents application accounts and password handling attributes.
+### 👤 1. User Model Schema
 
 | Field | Data Type | Attributes | Description |
 | :--- | :--- | :--- | :--- |
@@ -120,8 +116,7 @@ Represents application accounts and password handling attributes.
 | `password` | String | Required, Selected: False | Hashed password (using pre-save bcrypt hook). |
 | `createdAt` | Date | Default: `Date.now` | Registration timestamp. |
 
-### 2. Analysis Model Schema
-Represents the vector diagnostic results generated via Gemini AI.
+### 📉 2. Analysis Model Schema
 
 | Field | Data Type | Attributes | Description |
 | :--- | :--- | :--- | :--- |
@@ -160,44 +155,42 @@ BluePrint/
 │   ├── public/                 # Static public assets
 │   ├── src/
 │   │   ├── assets/             # Branding and icons
-│   │   ├── components/         # Global visual components
+│   │   ├── components/         # Global components
 │   │   │   └── Navbar.jsx             # Nav component
 │   │   ├── pages/              # View pages
-│   │   │   ├── History.jsx            # User history
-│   │   │   ├── Home.jsx               # Workspace workbench & PDF generator
+│   │   │   ├── History.jsx            # User history dashboard
+│   │   │   ├── Home.jsx               # Analysis workbench & PDF generator
 │   │   │   ├── Login.jsx              # Session login
 │   │   │   ├── Register.jsx           # Session register
 │   │   │   └── Welcome.jsx            # Dynamic landing page & responsive grid
 │   │   ├── App.css             # Theme style variables
-│   │   ├── App.jsx             # React routing & mouse particle physics
+│   │   ├── App.jsx             # React routing & global settings
 │   │   ├── config.js           # API route mapping
 │   │   ├── index.css           # Modern brutalist grid systems & styles
 │   │   └── main.jsx            # DOM renderer entrypoint
 │   ├── package.json
 │   └── vite.config.js
 │
-├── server/                     # Express Backend API
-│   ├── src/
-│   │   ├── controllers/        # Route controllers
-│   │   │   ├── auth.controller.js     # Auth routines
-│   │   │   └── analysis.controller.js # Parse, Scrape, & Gemini model fallbacks
-│   │   ├── middlewares/        # Express middleware chains
-│   │   │   ├── auth.middleware.js     # JWT route protection
-│   │   │   └── upload.middleware.js   # Multer file buffering
-│   │   ├── models/             # Mongoose schemas
-│   │   │   ├── Analysis.js
-│   │   │   └── User.js
-│   │   ├── routes/             # Express routes endpoints
-│   │   │   ├── analysis.routes.js
-│   │   │   └── auth.routes.js
-│   │   ├── utils/              # Cryptography and token tools
-│   │   │   └── generateToken.js
-│   │   ├── app.js              # Express app declarations
-│   │   └── server.js           # Database hooks and process start
-│   ├── package.json
-│   └── .env
-│
-└── docs/                       # Project Documentation assets
+└── server/                     # Express Backend API
+    ├── src/
+    │   ├── controllers/        # Route controllers
+    │   │   ├── auth.controller.js     # Auth routines
+    │   │   └── analysis.controller.js # Ingestion, Scraper, & Gemini model fallbacks
+    │   ├── middlewares/        # Express middleware chains
+    │   │   ├── auth.middleware.js     # JWT route protection
+    │   │   └── upload.js              # Multer memory buffering
+    │   ├── models/             # Mongoose schemas
+    │   │   ├── Analysis.js
+    │   │   └── User.js
+    │   ├── routes/             # Express routes endpoints
+    │   │   ├── analysis.routes.js
+    │   │   └── auth.routes.js
+    │   ├── utils/              # Cryptography and token tools
+    │   │   └── generateToken.js
+    │   ├── app.js              # Express app declarations
+    │   └── server.js           # Database connections and bootstrap
+    ├── package.json
+    └── .env
 ```
 
 ---
@@ -221,7 +214,7 @@ cd server
 npm install
 
 # Create server/.env file and fill in parameters
-# Run Development Server with Nodemon:
+# Run Development Server:
 npm run dev
 ```
 
@@ -233,7 +226,6 @@ npm install
 # Run Development Server:
 npm run dev
 ```
-The React development server runs by default on `http://localhost:5173`. The backend services route request payloads through `http://localhost:5000`.
 
 ---
 
@@ -247,9 +239,16 @@ The React development server runs by default on `http://localhost:5173`. The bac
 
 ---
 
-## 📜 License
-Licensed under the [MIT License](LICENSE).
+## 📄 License
 
-<p align="center">
-  Built with ❤️ by <b>Yash Kumar Sharma</b> for the Integrated Project Viva (SEM-6).
-</p>
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👨‍💻 Author
+
+**Built with ❤️ and 💻 by:**
+
+[![Yash Kumar Sharma](https://img.shields.io/badge/GitHub-Yash%20Kumar%20Sharma-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/yash-kumarsharma)
+
+---
