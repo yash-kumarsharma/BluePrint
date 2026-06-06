@@ -4,21 +4,31 @@ if (dns.setDefaultResultOrder) {
   dns.setDefaultResultOrder('ipv4first');
 }
 
-// Disable IPv6 resolution to resolve ENETUNREACH errors on hosts without IPv6 routing (e.g. Render)
-const originalResolve6 = dns.resolve6;
-dns.resolve6 = function (hostname, options, callback) {
-  const cb = typeof options === 'function' ? options : callback;
-  if (cb) {
-    return cb(null, []);
-  }
-  if (typeof originalResolve6 === 'function') {
-    return originalResolve6.apply(dns, arguments);
-  }
-};
-if (dns.promises && dns.promises.resolve6) {
-  dns.promises.resolve6 = async function () {
-    return [];
+// Disable IPv6 resolution globally (including on Resolver class instances used by Nodemailer)
+const disableResolve6 = () => {
+  return function (hostname, options, callback) {
+    const cb = typeof options === 'function' ? options : callback;
+    if (cb) {
+      return cb(null, []);
+    }
   };
+};
+
+if (typeof dns.resolve6 === 'function') {
+  dns.resolve6 = disableResolve6();
+}
+
+if (dns.Resolver && dns.Resolver.prototype) {
+  dns.Resolver.prototype.resolve6 = disableResolve6();
+}
+
+if (dns.promises) {
+  if (typeof dns.promises.resolve6 === 'function') {
+    dns.promises.resolve6 = async () => [];
+  }
+  if (dns.promises.Resolver && dns.promises.Resolver.prototype) {
+    dns.promises.Resolver.prototype.resolve6 = async () => [];
+  }
 }
 
 const mongoose = require('mongoose');
