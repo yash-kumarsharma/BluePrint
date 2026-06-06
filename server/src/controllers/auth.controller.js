@@ -62,16 +62,12 @@ exports.registerUser = async (req, res) => {
         </div>
       `;
 
-      try {
-        await sendEmail({
-          email: user.email,
-          subject: 'Welcome to BluePrint - Account Created',
-          message: `Welcome to BluePrint, ${name}! Your account has been created successfully.`,
-          html: welcomeHtml
-        });
-      } catch (err) {
-        console.error('Error sending welcome email:', err.message);
-      }
+      sendEmail({
+        email: user.email,
+        subject: 'Welcome to BluePrint - Account Created',
+        message: `Welcome to BluePrint, ${name}! Your account has been created successfully.`,
+        html: welcomeHtml
+      }).catch(err => console.error('Error sending welcome email:', err.message));
 
       res.status(201).json({
         success: true,
@@ -255,16 +251,12 @@ exports.deleteUserProfile = async (req, res) => {
       </div>
     `;
 
-    try {
-      await sendEmail({
-        email,
-        subject: 'BluePrint Account Deleted Successfully',
-        message: `Hello ${name}, your BluePrint account and scan history have been permanently deleted.`,
-        html: goodbyeHtml
-      });
-    } catch (err) {
-      console.error('Error sending goodbye email:', err.message);
-    }
+    sendEmail({
+      email,
+      subject: 'BluePrint Account Deleted Successfully',
+      message: `Hello ${name}, your BluePrint account and scan history have been permanently deleted.`,
+      html: goodbyeHtml
+    }).catch(err => console.error('Error sending goodbye email:', err.message));
 
     res.status(200).json({
       success: true,
@@ -319,12 +311,12 @@ exports.sendOtp = async (req, res) => {
       </div>
     `;
 
-    await sendEmail({
+    sendEmail({
       email,
       subject: 'Verify your BluePrint account - OTP',
       message: `Your BluePrint verification code is: ${otp}. It is valid for 5 minutes.`,
       html
-    });
+    }).catch(err => console.error('Error sending OTP email:', err.message));
 
     res.status(200).json({ success: true, message: 'OTP sent successfully to email' });
   } catch (error) {
@@ -380,12 +372,12 @@ exports.forgotPassword = async (req, res) => {
       </div>
     `;
 
-    await sendEmail({
+    sendEmail({
       email: user.email,
       subject: 'Reset your BluePrint password',
       message: `You requested a password reset. Reset your password here: ${resetUrl}`,
       html
-    });
+    }).catch(err => console.error('Error sending reset email:', err.message));
 
     res.status(200).json({ success: true, message: 'Recovery link sent successfully to email' });
   } catch (error) {
@@ -492,16 +484,12 @@ exports.googleLogin = async (req, res) => {
         </div>
       `;
 
-      try {
-        await sendEmail({
-          email: user.email,
-          subject: 'Welcome to BluePrint - Account Created',
-          message: `Welcome to BluePrint, ${name}! Your account has been created successfully.`,
-          html: welcomeHtml
-        });
-      } catch (err) {
-        console.error('Error sending welcome email:', err.message);
-      }
+      sendEmail({
+        email: user.email,
+        subject: 'Welcome to BluePrint - Account Created',
+        message: `Welcome to BluePrint, ${name}! Your account has been created successfully.`,
+        html: welcomeHtml
+      }).catch(err => console.error('Error sending welcome email:', err.message));
     }
 
     res.status(200).json({
