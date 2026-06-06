@@ -1,25 +1,107 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, AlertCircle, TrendingUp, User } from 'lucide-react';
+import { Mail, Lock, Eye, AlertCircle, TrendingUp, User, ShieldCheck } from 'lucide-react';
 import { API_ENDPOINTS } from '../config';
 
 const Register = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpLoading, setOtpLoading] = useState(false);
+  const [countdown, setCountdown] = useState(0);
   const [error, setError] = useState(null);
+  const [infoMessage, setInfoMessage] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
-    e.preventDefault();
+  // Handle countdown timer
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
+
+  // Google SSO Initialization
+  useEffect(() => {
+    /* global google */
+    const initializeGoogle = () => {
+      if (window.google) {
+        window.google.accounts.id.initialize({
+          client_id: import.meta.env.VITE_GOOGLE_CLIENT_ID || 'your_google_client_id.apps.googleusercontent.com',
+          callback: handleGoogleResponse
+        });
+        window.google.accounts.id.renderButton(
+          document.getElementById("googleBtnRegister"),
+          { theme: "outline", size: "large", width: 360 }
+        );
+      }
+    };
+
+    const checkGoogleInterval = setInterval(() => {
+      if (window.google) {
+        initializeGoogle();
+        clearInterval(checkGoogleInterval);
+      }
+    }, 500);
+
+    return () => clearInterval(checkGoogleInterval);
+  }, []);
+
+  const handleGoogleResponse = async (response) => {
     try {
       setLoading(true);
       setError(null);
       const config = { headers: { 'Content-Type': 'application/json' } };
-      const { data } = await axios.post(`${API_ENDPOINTS.AUTH}/register`, { name, email, password }, config);
+      const { data } = await axios.post(`${API_ENDPOINTS.AUTH}/google`, { credential: response.credential }, config);
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      navigate('/');
+      window.location.reload();
+    } catch (err) {
+      setError(err.response?.data?.message || 'Google authentication failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!email) {
+      setError('Please enter your email first');
+      return;
+    }
+    try {
+      setOtpLoading(true);
+      setError(null);
+      setInfoMessage(null);
+      const config = { headers: { 'Content-Type': 'application/json' } };
+      await axios.post(`${API_ENDPOINTS.AUTH}/send-otp`, { email }, config);
+      setOtpSent(true);
+      setCountdown(60);
+      setInfoMessage('Verification code (OTP) sent to your email.');
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to send verification code');
+    } finally {
+      setOtpLoading(false);
+    }
+  };
+
+  const handleRegister = async (e) => {
+    e.preventDefault();
+    if (!otpSent) {
+      setError('Please request and enter your email OTP verification code');
+      return;
+    }
+    try {
+      setLoading(true);
+      setError(null);
+      setInfoMessage(null);
+      const config = { headers: { 'Content-Type': 'application/json' } };
+      const { data } = await axios.post(`${API_ENDPOINTS.AUTH}/register`, { name, email, password, otp }, config);
       localStorage.setItem('userInfo', JSON.stringify(data));
       navigate('/');
       window.location.reload();
@@ -50,19 +132,15 @@ const Register = () => {
               </div>
             )}
 
-            <button className="oauth-btn" style={{ marginBottom: '12px' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
-                <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"/>
-                <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"/>
-                <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z"/>
-                <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z"/>
-              </svg> Sign up with Google
-            </button>
-            <button className="oauth-btn">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#3182CE">
-                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-              </svg> Sign up with LinkedIn
-            </button>
+            {infoMessage && (
+              <div style={{ color: '#047857', background: '#ECFDF5', padding: '12px 16px', borderRadius: '8px', marginBottom: '1.5rem', fontSize: '0.9rem', border: '1px solid #a7f3d0' }}>
+                {infoMessage}
+              </div>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', width: '100%', minHeight: '44px' }}>
+              <div id="googleBtnRegister"></div>
+            </div>
 
             <div className="divider">OR USE EMAIL</div>
 
@@ -85,25 +163,65 @@ const Register = () => {
 
               <div className="auth-input-group">
                 <label>Email Address</label>
-                <div style={{ position: 'relative' }}>
-                  <Mail size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
-                  <input 
-                    type="email" 
-                    required 
-                    placeholder="alex@blueprint.ai"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    style={{ paddingLeft: '40px' }}
-                  />
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <div style={{ position: 'relative', flex: 1 }}>
+                    <Mail size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input 
+                      type="email" 
+                      required 
+                      disabled={otpSent}
+                      placeholder="alex@blueprint.ai"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      style={{ paddingLeft: '40px' }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    disabled={otpLoading || countdown > 0}
+                    onClick={handleSendOtp}
+                    style={{
+                      background: countdown > 0 ? '#CBD5E1' : '#0F172A',
+                      color: '#fff',
+                      border: 'none',
+                      padding: '0 16px',
+                      borderRadius: '12px',
+                      fontSize: '0.85rem',
+                      fontWeight: 800,
+                      cursor: countdown > 0 ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    {otpLoading ? 'Sending...' : countdown > 0 ? `Resend (${countdown}s)` : 'Send OTP'}
+                  </button>
                 </div>
               </div>
+
+              {otpSent && (
+                <div className="auth-input-group">
+                  <label>Verification Code (OTP)</label>
+                  <div style={{ position: 'relative' }}>
+                    <ShieldCheck size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
+                    <input 
+                      type="text" 
+                      required 
+                      maxLength="6"
+                      placeholder="Enter 6-Digit Code"
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value)}
+                      style={{ paddingLeft: '40px', letterSpacing: '4px', fontWeight: 800 }}
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="auth-input-group">
                 <label>Password</label>
                 <div style={{ position: 'relative' }}>
                   <Lock size={18} color="#A0AEC0" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                   <input 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     required 
                     placeholder="Minimum 6 characters"
                     value={password}
@@ -111,7 +229,12 @@ const Register = () => {
                     minLength="6"
                     style={{ paddingLeft: '40px' }}
                   />
-                  <Eye size={18} color="#A0AEC0" style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} />
+                  <Eye 
+                    size={18} 
+                    color="#A0AEC0" 
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', cursor: 'pointer' }} 
+                  />
                 </div>
               </div>
 

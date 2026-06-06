@@ -5,12 +5,20 @@ const {
   loginUser, 
   getUserProfile, 
   updateUserProfile, 
-  deleteUserProfile 
+  deleteUserProfile,
+  sendOtp,
+  forgotPassword,
+  resetPassword,
+  googleLogin
 } = require('../controllers/auth.controller');
 const { protect } = require('../middlewares/auth.middleware');
 
 router.post('/register', registerUser);
 router.post('/login', loginUser);
+router.post('/send-otp', sendOtp);
+router.post('/forgot-password', forgotPassword);
+router.put('/reset-password/:resetToken', resetPassword);
+router.post('/google', googleLogin);
 
 // User Profile routes (Private)
 router.get('/profile', protect, getUserProfile);

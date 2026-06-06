@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import History from './pages/History';
 import Profile from './pages/Profile';
 import Welcome from './pages/Welcome';
+import ResetPassword from './pages/ResetPassword';
 
 function App() {
   const [mousePosition, setMousePosition] = useState({ x: -1000, y: -1000 });
@@ -43,6 +44,7 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/history" element={<History />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Routes>
     </Router>
   );

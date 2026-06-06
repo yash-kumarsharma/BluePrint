@@ -21,6 +21,8 @@ const userSchema = new mongoose.Schema({
     minlength: 6,
     select: false, // Don't return password by default when fetching user
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
   createdAt: {
     type: Date,
     default: Date.now,
