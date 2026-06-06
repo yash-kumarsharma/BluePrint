@@ -294,7 +294,7 @@ exports.sendOtp = async (req, res) => {
     await Otp.findOneAndUpdate(
       { email },
       { otp, expiresAt },
-      { upsert: true, new: true }
+      { upsert: true, returnDocument: 'after' }
     );
 
     // Prepare email content
