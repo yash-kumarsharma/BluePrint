@@ -35,6 +35,10 @@ const History = () => {
         setHistory(data.data);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to fetch history');
+        if (err.response?.status === 401) {
+          localStorage.removeItem('userInfo');
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }

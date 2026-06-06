@@ -50,6 +50,10 @@ const Profile = () => {
         setEmail(data.data.email);
       } catch (err) {
         setError(err.response?.data?.message || 'Failed to load profile');
+        if (err.response?.status === 401) {
+          localStorage.removeItem('userInfo');
+          navigate('/login');
+        }
       } finally {
         setLoading(false);
       }
@@ -170,6 +174,37 @@ const Profile = () => {
          </div>
       </div>
       <h2 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#0F172A' }}>Accessing Profile Cockpit...</h2>
+    </div>
+  );
+
+  if (error || !profile) return (
+    <div style={{ background: '#F8FAFC', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '2rem' }}>
+      <div style={{ background: '#FFF5F5', width: '80px', height: '80px', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1.5rem', color: '#EF4444', border: '1px solid rgba(239, 68, 68, 0.15)' }}>
+        <ShieldAlert size={36} />
+      </div>
+      <h2 style={{ fontSize: '1.8rem', fontWeight: 900, color: '#0F172A', marginBottom: '0.5rem', letterSpacing: '-0.02em', fontFamily: '"Plus Jakarta Sans", sans-serif' }}>Session Synchronisation Failed</h2>
+      <p style={{ fontSize: '1.05rem', color: '#64748B', maxWidth: '400px', margin: '0 auto 2rem', fontWeight: 500, lineHeight: 1.6 }}>
+        {error || 'Your session profile data could not be retrieved from the server.'}
+      </p>
+      <button
+        onClick={() => {
+          localStorage.removeItem('userInfo');
+          navigate('/login');
+        }}
+        style={{
+          background: '#0F172A',
+          color: '#fff',
+          border: 'none',
+          padding: '14px 28px',
+          borderRadius: '16px',
+          fontWeight: 800,
+          fontSize: '1rem',
+          cursor: 'pointer',
+          boxShadow: '0 8px 24px rgba(15,23,42,0.1)'
+        }}
+      >
+        Return to Login
+      </button>
     </div>
   );
 
