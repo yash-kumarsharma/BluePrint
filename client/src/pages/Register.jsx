@@ -17,7 +17,33 @@ const Register = () => {
   const [infoMessage, setInfoMessage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [btnWidth, setBtnWidth] = useState(308);
   const navigate = useNavigate();
+
+  // Resize handler for perfect width matching
+  useEffect(() => {
+    const handleResize = () => {
+      const card = document.querySelector('.auth-card');
+      if (card) {
+        const style = window.getComputedStyle(card);
+        const paddingLeft = parseFloat(style.paddingLeft);
+        const paddingRight = parseFloat(style.paddingRight);
+        const contentWidth = card.clientWidth - paddingLeft - paddingRight;
+        const adjustedWidth = contentWidth / 1.15;
+        if (adjustedWidth > 200 && adjustedWidth <= 400) {
+          setBtnWidth(adjustedWidth);
+        } else if (adjustedWidth > 400) {
+          setBtnWidth(400);
+        } else {
+          setBtnWidth(200);
+        }
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Handle countdown timer
   useEffect(() => {
@@ -30,6 +56,8 @@ const Register = () => {
   // Google SSO Initialization
   useEffect(() => {
     /* global google */
+    let checkGoogleInterval;
+    
     const initializeGoogle = () => {
       if (window.google) {
         window.google.accounts.id.initialize({
@@ -38,20 +66,28 @@ const Register = () => {
         });
         window.google.accounts.id.renderButton(
           document.getElementById("googleBtnRegister"),
-          { theme: "outline", size: "large", width: 360 }
+          { 
+            theme: "outline", 
+            size: "large", 
+            text: "continue_with", 
+            shape: "pill",
+            width: Math.floor(btnWidth)
+          }
         );
+        if (checkGoogleInterval) clearInterval(checkGoogleInterval);
       }
     };
 
-    const checkGoogleInterval = setInterval(() => {
-      if (window.google) {
-        initializeGoogle();
-        clearInterval(checkGoogleInterval);
-      }
-    }, 500);
+    if (window.google) {
+      initializeGoogle();
+    } else {
+      checkGoogleInterval = setInterval(initializeGoogle, 500);
+    }
 
-    return () => clearInterval(checkGoogleInterval);
-  }, []);
+    return () => {
+      if (checkGoogleInterval) clearInterval(checkGoogleInterval);
+    };
+  }, [btnWidth]);
 
   const handleGoogleResponse = async (response) => {
     try {
@@ -138,8 +174,18 @@ const Register = () => {
               </div>
             )}
 
-            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem', width: '100%', minHeight: '44px' }}>
-              <div id="googleBtnRegister"></div>
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              alignItems: 'center',
+              marginBottom: '1rem', 
+              width: '100%', 
+              height: '48px',
+              overflow: 'visible' 
+            }}>
+              <div style={{ transform: 'scale(1.15)', transformOrigin: 'center', display: 'inline-block' }}>
+                <div id="googleBtnRegister"></div>
+              </div>
             </div>
 
             <div className="divider">OR USE EMAIL</div>
